@@ -7,6 +7,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -49,5 +50,11 @@ public class CommentRestAdapter {
                 .flatMap(comment->{
                     return Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment)));
                 });
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> delete(@PathVariable("id") String id){
+        return commentInputPort.delete(id);
     }
 }

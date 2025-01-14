@@ -84,4 +84,14 @@ public class CommentPersistenceAdapterTest {
         Mockito.verify(commentPersistenceMapper, times(1)).toComment(any(Mono.class));
     }
 
+    @Test
+    @DisplayName("When Comment Exists Expect Comment Deleted Successfully")
+    void When_CommentExists_Expect_CommentDeletedSuccessfully() {
+        when(commentReactiveMongoRepository.deleteById(anyString())).thenReturn(Mono.empty());
+        Mono<Void> result = commentPersistenceAdapter.delete("1");
+        StepVerifier.create(result)
+                .verifyComplete();
+        Mockito.verify(commentReactiveMongoRepository, times(1)).deleteById(anyString());
+    }
+
 }

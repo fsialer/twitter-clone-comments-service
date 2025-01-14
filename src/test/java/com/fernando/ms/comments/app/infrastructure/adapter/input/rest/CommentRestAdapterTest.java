@@ -122,7 +122,16 @@ public class CommentRestAdapterTest {
                 .jsonPath("$.content").isEqualTo("comment");
     }
 
+    @Test
+    @DisplayName("When Comment Exists Expect Comment Deleted Successfully")
+    void When_CommentExists_Expect_CommentDeletedSuccessfully() {
+        when(commentInputPort.delete(anyString())).thenReturn(Mono.empty());
 
+        webTestClient.delete()
+                .uri("/comments/{id}", "1")
+                .exchange()
+                .expectStatus().isNoContent();
 
-
+        Mockito.verify(commentInputPort, times(1)).delete(anyString());
+    }
 }

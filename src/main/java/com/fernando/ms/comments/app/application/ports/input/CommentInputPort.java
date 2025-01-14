@@ -9,4 +9,5 @@ public interface CommentInputPort {
     Mono<Comment> findById(String id);
     Mono<Comment> save(Comment comment);
     Mono<Comment> update(String id,Comment comment);
+    Mono<Void> delete(String id);
 }

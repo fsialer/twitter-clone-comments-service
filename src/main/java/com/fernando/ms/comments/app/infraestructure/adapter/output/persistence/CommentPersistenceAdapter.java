@@ -43,4 +43,9 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
         }
         return commentPersistenceMapper.toComment(commentReactiveMongoRepository.save(commentDocument));
     }
+
+    @Override
+    public Mono<Void> delete(String id) {
+        return commentReactiveMongoRepository.deleteById(id);
+    }
 }

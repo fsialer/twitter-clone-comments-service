@@ -105,6 +105,37 @@ public class CommentServiceTest {
         Mockito.verify(commentPersistencePort,times(1)).findById(anyString());
     }
 
+    @Test
+    @DisplayName("When Comment Exists Expect Comment Deleted Successfully")
+    void When_CommentExists_Expect_CommentDeletedSuccessfully() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(commentPersistencePort.findById(anyString())).thenReturn(Mono.just(comment));
+        when(commentPersistencePort.delete(anyString())).thenReturn(Mono.empty());
+
+        Mono<Void> result = commentService.delete("1");
+
+        StepVerifier.create(result)
+                .verifyComplete();
+
+        Mockito.verify(commentPersistencePort, times(1)).findById(anyString());
+        Mockito.verify(commentPersistencePort, times(1)).delete(anyString());
+    }
+
+    @Test
+    @DisplayName("Expect CommentNotFoundException When Comment Does Not Exist")
+    void Expect_CommentNotFoundException_When_CommentDoesNotExist() {
+        when(commentPersistencePort.findById(anyString())).thenReturn(Mono.empty());
+
+        Mono<Void> result = commentService.delete("1");
+
+        StepVerifier.create(result)
+                .expectError(CommentNotFoundException.class)
+                .verify();
+
+        Mockito.verify(commentPersistencePort, times(1)).findById(anyString());
+        Mockito.verify(commentPersistencePort, Mockito.never()).delete(anyString());
+    }
+
 
 
 }
