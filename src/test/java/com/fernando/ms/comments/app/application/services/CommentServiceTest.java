@@ -77,6 +77,34 @@ public class CommentServiceTest {
         Mockito.verify(commentPersistencePort, times(1)).save(any(Comment.class));
     }
 
+    @Test
+    @DisplayName("When Comment Is Update Except Comment Information Save Correctly")
+    void When_CommentIsUpdateExcept_CommentInformationSaveCorrectly(){
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(commentPersistencePort.findById(anyString())).thenReturn(Mono.just(comment));
+        when(commentPersistencePort.save(any(Comment.class))).thenReturn(Mono.just(comment));
+
+        Mono<Comment> updateComment=commentService.update("1",comment);
+        StepVerifier.create(updateComment)
+                .expectNext(comment)
+                .verifyComplete();
+        Mockito.verify(commentPersistencePort,times(1)).save(any(Comment.class));
+        Mockito.verify(commentPersistencePort,times(1)).findById(anyString());
+    }
+
+    @Test
+    @DisplayName("Expect CommentNotFoundException When Updated Comment Identifier Is Invalid")
+    void Expect_CommentNotFoundException_When_UpdateCommentIdentifierIsInvalid(){
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(commentPersistencePort.findById(anyString())).thenReturn(Mono.empty());
+        Mono<Comment> updatePost=commentService.update("1",comment);
+        StepVerifier.create(updatePost)
+                .expectError(CommentNotFoundException.class)
+                .verify();
+        Mockito.verify(commentPersistencePort,times(0)).save(any(Comment.class));
+        Mockito.verify(commentPersistencePort,times(1)).findById(anyString());
+    }
+
 
 
 }

@@ -4,6 +4,7 @@ import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.domain.models.Post;
 import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,6 +21,8 @@ public interface CommentRestMapper {
     @Mapping(target = "user",expression = "java(mapUser(rq))")
     @Mapping(target = "post",expression = "java(mapPost(rq))")
     Comment toComment(CreateCommentRequest rq);
+
+    Comment toComment(UpdateCommentRequest rq);
 
     default User mapUser(CreateCommentRequest rq){
         return User.builder()

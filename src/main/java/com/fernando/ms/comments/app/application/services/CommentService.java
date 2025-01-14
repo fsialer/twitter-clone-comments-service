@@ -28,4 +28,14 @@ public class CommentService implements CommentInputPort {
     public Mono<Comment> save(Comment comment) {
         return commentPersistencePort.save(comment);
     }
+
+    @Override
+    public Mono<Comment> update(String id, Comment comment) {
+        return commentPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new))
+                .flatMap(commentUpdated->{
+                    commentUpdated.setContent(comment.getContent());
+                    return commentPersistencePort.save(commentUpdated);
+                });
+    }
 }

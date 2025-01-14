@@ -7,7 +7,9 @@ import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
+import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 

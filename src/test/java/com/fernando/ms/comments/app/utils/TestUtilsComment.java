@@ -4,6 +4,7 @@ import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.domain.models.Post;
 import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentPost;
@@ -54,6 +55,12 @@ public class TestUtilsComment {
                 .content("comment")
                 .postId("1")
                 .userId(1L)
+                .build();
+    }
+
+    public static UpdateCommentRequest buildUpdateCommentRequestMock(){
+        return UpdateCommentRequest.builder()
+                .content("comment")
                 .build();
     }
 }

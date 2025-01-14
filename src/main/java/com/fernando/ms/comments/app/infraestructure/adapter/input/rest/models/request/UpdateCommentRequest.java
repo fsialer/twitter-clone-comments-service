@@ -1,7 +1,6 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,11 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateCommentRequest {
+public class UpdateCommentRequest {
     @NotBlank(message = "Field content cannot be null or blank")
     private String content;
-    @NotNull(message = "Field userId cannot be null")
-    private Long userId;
-    @NotBlank(message = "Field postId cannot be null or blank")
-    private String postId;
 }

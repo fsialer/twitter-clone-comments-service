@@ -7,6 +7,7 @@ import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
@@ -100,6 +101,28 @@ public class CommentRestAdapterTest {
         Mockito.verify(commentInputPort, times(1)).save(any(Comment.class));
         Mockito.verify(commentRestMapper, times(1)).toCommentResponse(any(Comment.class));
     }
+
+    @Test
+    @DisplayName("When Comment Information Is Correct Expect Update Comment Successfully")
+    void When_CommentInformationIsCorrect_Expect_UpdateCommentSuccessfully() throws JsonProcessingException {
+        UpdateCommentRequest updateCommentRequest= TestUtilsComment.buildUpdateCommentRequestMock();
+        Comment comment=TestUtilsComment.buildCommentMock();
+        CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
+        when(commentRestMapper.toComment(any(UpdateCommentRequest.class))).thenReturn(comment);
+        when(commentInputPort.update(anyString(),any(Comment.class))).thenReturn(Mono.just(comment));
+        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+
+        webTestClient.put()
+                .uri("/comments/{id}","1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(objectMapper.writeValueAsString(updateCommentRequest))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.content").isEqualTo("comment");
+    }
+
+
 
 
 }
