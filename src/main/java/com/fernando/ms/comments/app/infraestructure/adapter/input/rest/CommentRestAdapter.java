@@ -57,4 +57,9 @@ public class CommentRestAdapter {
     public Mono<Void> delete(@PathVariable("id") String id){
         return commentInputPort.delete(id);
     }
+
+    @GetMapping("/{idPost}/post")
+    public Flux<CommentResponse> findAllByPost(@PathVariable("idPost") String postId){
+        return  commentRestMapper.toCommentsResponse(commentInputPort.findAllByPost(postId));
+    }
 }

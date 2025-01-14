@@ -47,4 +47,9 @@ public class CommentService implements CommentInputPort {
                     return commentPersistencePort.delete(id);
                 });
     }
+
+    @Override
+    public Flux<Comment> findAllByPost(String postId) {
+        return commentPersistencePort.findAllByPost(postId);
+    }
 }

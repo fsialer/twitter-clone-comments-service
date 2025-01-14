@@ -10,4 +10,5 @@ public interface CommentInputPort {
     Mono<Comment> save(Comment comment);
     Mono<Comment> update(String id,Comment comment);
     Mono<Void> delete(String id);
+    Flux<Comment> findAllByPost(String postId);
 }

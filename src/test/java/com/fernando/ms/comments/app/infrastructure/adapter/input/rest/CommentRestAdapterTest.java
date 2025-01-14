@@ -134,4 +134,24 @@ public class CommentRestAdapterTest {
 
         Mockito.verify(commentInputPort, times(1)).delete(anyString());
     }
+
+    @Test
+    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments")
+    void When_PostIdentifierIsCorrect_Expect_AListOfComments() {
+        CommentResponse commentResponse = TestUtilsComment.buildCommentResponseMock();
+        Comment comment = TestUtilsComment.buildCommentMock();
+
+        when(commentInputPort.findAllByPost(anyString())).thenReturn(Flux.just(comment));
+        when(commentRestMapper.toCommentsResponse(any(Flux.class))).thenReturn(Flux.just(commentResponse));
+
+        webTestClient.get()
+                .uri("/comments/{idPost}/post", "1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$[0].content").isEqualTo("comment");
+
+        Mockito.verify(commentInputPort, times(1)).findAllByPost(anyString());
+        Mockito.verify(commentRestMapper, times(1)).toCommentsResponse(any(Flux.class));
+    }
 }

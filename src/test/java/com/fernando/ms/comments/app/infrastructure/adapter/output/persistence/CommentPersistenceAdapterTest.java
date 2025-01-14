@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.infrastructure.adapter.output.persistence;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.CommentPersistenceAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentPost;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper.CommentPersistenceMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.repository.CommentReactiveMongoRepository;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
@@ -92,6 +93,26 @@ public class CommentPersistenceAdapterTest {
         StepVerifier.create(result)
                 .verifyComplete();
         Mockito.verify(commentReactiveMongoRepository, times(1)).deleteById(anyString());
+    }
+
+    @Test
+    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments")
+    void When_PostIdentifierIsCorrect_Expect_AListOfComments() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        CommentDocument commentDocument = TestUtilsComment.buildCommentDocumentMock();
+        CommentPost commentPost = CommentPost.builder().postId("postId").build();
+
+        when(commentReactiveMongoRepository.findAllByCommentPost(any(CommentPost.class))).thenReturn(Flux.just(commentDocument));
+        when(commentPersistenceMapper.toComments(any(Flux.class))).thenReturn(Flux.just(comment));
+
+        Flux<Comment> comments = commentPersistenceAdapter.findAllByPost("postId");
+
+        StepVerifier.create(comments)
+                .expectNext(comment)
+                .verifyComplete();
+
+        Mockito.verify(commentReactiveMongoRepository, times(1)).findAllByCommentPost(any(CommentPost.class));
+        Mockito.verify(commentPersistenceMapper, times(1)).toComments(any(Flux.class));
     }
 
 }

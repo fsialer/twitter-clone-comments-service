@@ -136,6 +136,17 @@ public class CommentServiceTest {
         Mockito.verify(commentPersistencePort, Mockito.never()).delete(anyString());
     }
 
+    @Test
+    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments")
+    void When_PostIdentifierIsCorrect_Expect_AListOfComments() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(commentPersistencePort.findAllByPost(anyString())).thenReturn(Flux.just(comment));
 
+        Flux<Comment> comments = commentService.findAllByPost("postId");
+        StepVerifier.create(comments)
+                .expectNext(comment)
+                .verifyComplete();
+        Mockito.verify(commentPersistencePort, times(1)).findAllByPost(anyString());
+    }
 
 }

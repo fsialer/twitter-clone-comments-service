@@ -9,4 +9,5 @@ public interface CommentPersistencePort {
     Mono<Comment> findById(String id);
     Mono<Comment> save(Comment comment);
     Mono<Void> delete(String id);
+    Flux<Comment> findAllByPost(String postId);
 }

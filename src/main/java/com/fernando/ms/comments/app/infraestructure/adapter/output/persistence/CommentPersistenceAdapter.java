@@ -48,4 +48,12 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
     public Mono<Void> delete(String id) {
         return commentReactiveMongoRepository.deleteById(id);
     }
+
+    @Override
+    public Flux<Comment> findAllByPost(String postId) {
+        CommentPost commentPost = CommentPost.builder()
+                .postId(postId)
+                .build();
+        return commentPersistenceMapper.toComments(commentReactiveMongoRepository.findAllByCommentPost(commentPost));
+    }
 }
