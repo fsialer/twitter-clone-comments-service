@@ -2,6 +2,9 @@ package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence;
 
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
 import com.fernando.ms.comments.app.domain.models.Comment;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentPost;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentUser;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper.CommentPersistenceMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.repository.CommentReactiveMongoRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +26,21 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
     @Override
     public Mono<Comment> findById(String id) {
         return commentReactiveMongoRepository.findById(id).map(commentPersistenceMapper::toComment);
+    }
+
+    @Override
+    public Mono<Comment> save(Comment comment) {
+        CommentDocument commentDocument=commentPersistenceMapper.toCommentDocument(comment);
+        if(comment.getId()==null){
+            CommentUser commentUser = CommentUser.builder()
+                    .userId(comment.getUser().getId())
+                    .build();
+            CommentPost commentPost = CommentPost.builder()
+                    .postId(comment.getPost().getId())
+                    .build();
+            commentDocument.setCommentUser(commentUser);
+            commentDocument.setCommentPost(commentPost);
+        }
+        return commentPersistenceMapper.toComment(commentReactiveMongoRepository.save(commentDocument));
     }
 }

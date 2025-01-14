@@ -64,4 +64,24 @@ public class CommentPersistenceAdapterTest {
         Mockito.verify(commentPersistenceMapper,times(1)).toComment(any(CommentDocument.class));
     }
 
+    @Test
+    @DisplayName("When Comment Is Saved Successfully Expect Comment Information Correct")
+    void When_CommentIsSavedSuccessfully_Expect_CommentInformationCorrect() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        CommentDocument commentDocument = TestUtilsComment.buildCommentDocumentMock();
+
+        when(commentPersistenceMapper.toCommentDocument(any(Comment.class))).thenReturn(commentDocument);
+        when(commentReactiveMongoRepository.save(any(CommentDocument.class))).thenReturn(Mono.just(commentDocument));
+        when(commentPersistenceMapper.toComment(any(Mono.class))).thenReturn(Mono.just(comment));
+
+        Mono<Comment> savedComment = commentPersistenceAdapter.save(comment);
+
+        StepVerifier.create(savedComment)
+                .expectNext(comment)
+                .verifyComplete();
+        Mockito.verify(commentPersistenceMapper, times(1)).toCommentDocument(any(Comment.class));
+        Mockito.verify(commentReactiveMongoRepository, times(1)).save(any(CommentDocument.class));
+        Mockito.verify(commentPersistenceMapper, times(1)).toComment(any(Mono.class));
+    }
+
 }

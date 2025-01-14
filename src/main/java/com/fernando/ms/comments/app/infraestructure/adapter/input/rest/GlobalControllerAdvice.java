@@ -2,10 +2,13 @@ package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -13,8 +16,7 @@ import java.util.Collections;
 
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.FUNCTIONAL;
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.SYSTEM;
-import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.COMMENT_NOT_FOUND;
-import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.INTERNAL_SERVER_ERROR;
+import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -25,6 +27,22 @@ public class GlobalControllerAdvice {
                 .code(COMMENT_NOT_FOUND.getCode())
                 .type(FUNCTIONAL)
                 .message(COMMENT_NOT_FOUND.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(WebExchangeBindException.class)
+    public Mono<ErrorResponse> handleWebExchangeBindException(
+            WebExchangeBindException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        return Mono.just(ErrorResponse.builder()
+                .code(COMMENT_BAD_PARAMETERS.getCode())
+                .type(FUNCTIONAL)
+                .message(COMMENT_BAD_PARAMETERS.getMessage())
+                .details(bindingResult.getFieldErrors().stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .toList())
                 .timestamp(LocalDate.now().toString())
                 .build());
     }

@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.utils;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.domain.models.Post;
 import com.fernando.ms.comments.app.domain.models.User;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentPost;
@@ -35,6 +36,8 @@ public class TestUtilsComment {
                 .dateComment(LocalDateTime.now())
                 .commentPost(CommentPost.builder().postId("1").build())
                 .commentUser(CommentUser.builder().userId(1L).build())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -43,6 +46,14 @@ public class TestUtilsComment {
                 .id("1")
                 .content("comment")
                 .dateComment(LocalDateTime.now())
+                .build();
+    }
+
+    public static CreateCommentRequest buildCreateCommentRequestMock(){
+        return CreateCommentRequest.builder()
+                .content("comment")
+                .postId("1")
+                .userId(1L)
                 .build();
     }
 }

@@ -2,15 +2,16 @@ package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +30,15 @@ public class CommentRestAdapter {
         return commentInputPort.findById(id)
                 .flatMap(comment -> {
                     return Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment)));
+                });
+    }
+
+    @PostMapping
+    public Mono<ResponseEntity<CommentResponse>> save(@Valid @RequestBody CreateCommentRequest rq){
+        return commentInputPort.save(commentRestMapper.toComment(rq))
+                .flatMap(comment -> {
+                    String location = "/comments/".concat(comment.getId());
+                    return Mono.just(ResponseEntity.created(URI.create(location)).body(commentRestMapper.toCommentResponse(comment)));
                 });
     }
 }

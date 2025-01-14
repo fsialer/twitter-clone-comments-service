@@ -1,10 +1,12 @@
 package com.fernando.ms.comments.app.infrastructure.adapter.input.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -72,5 +75,31 @@ public class CommentRestAdapterTest {
         Mockito.verify(commentInputPort,times(1)).findById(anyString());
         Mockito.verify(commentRestMapper,times(1)).toCommentResponse(any(Comment.class));
     }
+
+    @Test
+    @DisplayName("When Comment Is Saved Successfully Expect Comment Information Correct")
+    void When_CommentIsSavedSuccessfully_Expect_CommentInformationCorrect() throws JsonProcessingException {
+        CreateCommentRequest createPostRequest = TestUtilsComment.buildCreateCommentRequestMock();
+        Comment comment = TestUtilsComment.buildCommentMock();
+        CommentResponse commentResponse = TestUtilsComment.buildCommentResponseMock();
+
+        when(commentRestMapper.toComment(any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.just(comment));
+        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+
+        webTestClient.post()
+                .uri("/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(objectMapper.writeValueAsString(createPostRequest))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody()
+                .jsonPath("$.content").isEqualTo("comment");
+
+        Mockito.verify(commentRestMapper, times(1)).toComment(any(CreateCommentRequest.class));
+        Mockito.verify(commentInputPort, times(1)).save(any(Comment.class));
+        Mockito.verify(commentRestMapper, times(1)).toCommentResponse(any(Comment.class));
+    }
+
 
 }

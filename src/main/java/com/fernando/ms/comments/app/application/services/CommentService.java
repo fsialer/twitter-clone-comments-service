@@ -23,4 +23,9 @@ public class CommentService implements CommentInputPort {
         return commentPersistencePort.findById(id)
                 .switchIfEmpty(Mono.error(CommentNotFoundException::new));
     }
+
+    @Override
+    public Mono<Comment> save(Comment comment) {
+        return commentPersistencePort.save(comment);
+    }
 }

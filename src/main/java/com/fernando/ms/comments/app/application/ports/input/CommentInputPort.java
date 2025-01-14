@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 public interface CommentInputPort {
     Flux<Comment> findAll();
     Mono<Comment> findById(String id);
+    Mono<Comment> save(Comment comment);
 }

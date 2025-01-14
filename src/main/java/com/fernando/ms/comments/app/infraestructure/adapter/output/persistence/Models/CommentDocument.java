@@ -19,6 +19,8 @@ public class CommentDocument {
     private String id;
     private String content;
     private LocalDateTime dateComment;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private CommentUser commentUser;
     private CommentPost commentPost;
 }

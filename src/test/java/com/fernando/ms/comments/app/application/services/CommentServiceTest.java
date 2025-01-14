@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -61,6 +62,21 @@ public class CommentServiceTest {
                 .verify();
         Mockito.verify(commentPersistencePort,times(1)).findById(anyString());
     }
+
+    @Test
+    @DisplayName("When Comment Is Saved Successfully Expect Comment Information Correct")
+    void When_CommentIsSavedSuccessfully_Expect_CommentInformationCorrect() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(commentPersistencePort.save(any(Comment.class))).thenReturn(Mono.just(comment));
+
+        Mono<Comment> savedComment = commentService.save(comment);
+
+        StepVerifier.create(savedComment)
+                .expectNext(comment)
+                .verifyComplete();
+        Mockito.verify(commentPersistencePort, times(1)).save(any(Comment.class));
+    }
+
 
 
 }
