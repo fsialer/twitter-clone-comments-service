@@ -1,0 +1,10 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: twitter-clone-comments-service
+  jackson:
+    default-property-inclusion: NON_NULL
+  data:
+    mongodb:
+      uri: {DB_URL:mongodb://localhost:27017/tc_comments_db}

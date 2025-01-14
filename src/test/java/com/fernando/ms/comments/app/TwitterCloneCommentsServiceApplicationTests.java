@@ -1,4 +1,4 @@
-package com.fernando.ms.comments.app.twitter_clone_comments_service;
+package com.fernando.ms.comments.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
