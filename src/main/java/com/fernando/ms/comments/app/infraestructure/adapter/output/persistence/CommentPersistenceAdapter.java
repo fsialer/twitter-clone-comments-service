@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class CommentPersistenceAdapter implements CommentPersistencePort {
@@ -40,6 +42,16 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
                     .build();
             commentDocument.setCommentUser(commentUser);
             commentDocument.setCommentPost(commentPost);
+        }else{
+            return commentReactiveMongoRepository.findById(comment.getId())
+                    .flatMap(commentDocument1 -> {
+                        commentDocument.setCommentUser(commentDocument1.getCommentUser());
+                        commentDocument.setCommentPost(commentDocument1.getCommentPost());
+                        commentDocument.setDateComment(commentDocument1.getDateComment());
+                        commentDocument.setCreatedAt(commentDocument1.getCreatedAt());
+                        commentDocument.setUpdatedAt(LocalDateTime.now());
+                        return commentPersistenceMapper.toComment(commentReactiveMongoRepository.save(commentDocument));
+                    });
         }
         return commentPersistenceMapper.toComment(commentReactiveMongoRepository.save(commentDocument));
     }
