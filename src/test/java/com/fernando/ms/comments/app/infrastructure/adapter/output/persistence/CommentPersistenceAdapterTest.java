@@ -14,9 +14,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -45,4 +47,21 @@ public class CommentPersistenceAdapterTest {
         Mockito.verify(commentReactiveMongoRepository,times(1)).findAll();
         Mockito.verify(commentPersistenceMapper,times(1)).toComments(any(Flux.class));
     }
+
+    @Test
+    @DisplayName("When Comment Identifier Is Correct Expect Comment Information Correct")
+    void When_CommentIdentifierIsCorrect_Expect_CommentInformationCorrect(){
+        Comment comment= TestUtilsComment.buildCommentMock();
+        CommentDocument commentDocument= TestUtilsComment.buildCommentDocumentMock();
+        when(commentReactiveMongoRepository.findById(anyString())).thenReturn(Mono.just(commentDocument));
+        when(commentPersistenceMapper.toComment(any(CommentDocument.class))).thenReturn(comment);
+
+        Mono<Comment> result=commentPersistenceAdapter.findById("1");
+        StepVerifier.create(result)
+                .expectNext(comment)
+                .verifyComplete();
+        Mockito.verify(commentReactiveMongoRepository,times(1)).findById(anyString());
+        Mockito.verify(commentPersistenceMapper,times(1)).toComment(any(CommentDocument.class));
+    }
+
 }

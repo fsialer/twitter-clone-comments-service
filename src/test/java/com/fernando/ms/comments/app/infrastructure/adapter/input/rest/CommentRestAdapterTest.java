@@ -15,8 +15,10 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +53,24 @@ public class CommentRestAdapterTest {
                 .jsonPath("$[0].content").isEqualTo("comment");
         Mockito.verify(commentInputPort,times(1)).findAll();
         Mockito.verify(commentRestMapper,times(1)).toCommentsResponse(any(Flux.class));
+    }
+
+    @Test
+    @DisplayName("When Comment Identifier Is Correct Expect Comment Information Successfully")
+    void When_CommentIdentifierIsCorrect_Expect_CommentInformationSuccessfully() {
+        CommentResponse commentResponse = TestUtilsComment.buildCommentResponseMock();
+        Comment comment=TestUtilsComment.buildCommentMock();
+        when(commentInputPort.findById(anyString())).thenReturn(Mono.just(comment));
+        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+        webTestClient.get()
+                .uri("/comments/{id}",1L)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.content").isEqualTo("comment");
+
+        Mockito.verify(commentInputPort,times(1)).findById(anyString());
+        Mockito.verify(commentRestMapper,times(1)).toCommentResponse(any(Comment.class));
     }
 
 }
