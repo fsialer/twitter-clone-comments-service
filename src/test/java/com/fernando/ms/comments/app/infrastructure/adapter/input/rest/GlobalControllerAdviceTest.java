@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
+import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
@@ -65,8 +68,8 @@ public class GlobalControllerAdviceTest {
                 .expectStatus().is5xxServerError()
                 .expectBody(ErrorResponse.class)
                 .value(response -> {
-                    assert response.getCode().equals(INTERNAL_SERVER_ERROR.getCode());
-                    assert response.getMessage().equals(INTERNAL_SERVER_ERROR.getMessage());
+                    assert response.getCode().equals(COMMENT_INTERNAL_SERVER_ERROR.getCode());
+                    assert response.getMessage().equals(COMMENT_INTERNAL_SERVER_ERROR.getMessage());
                 });
     }
     @Test
@@ -88,6 +91,51 @@ public class GlobalControllerAdviceTest {
                 .value(response -> {
                     assert response.getCode().equals(COMMENT_BAD_PARAMETERS.getCode());
                     assert response.getMessage().equals(COMMENT_BAD_PARAMETERS.getMessage());
+                });
+    }
+
+    @Test
+    @DisplayName("Expect UserNotFoundException When Comment User Identifier Is Invalid")
+    void Expect_UserNotFoundException_When_CommentUserIdentifierIsInvalid() throws JsonProcessingException {
+        CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
+        Comment comment=TestUtilsComment.buildCommentMock();
+        CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
+        when(commentRestMapper.toComment(any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+        when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new UserNotFoundException()));
+
+        webTestClient.post()
+                .uri("/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(objectMapper.writeValueAsString(createCommentRequest))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorResponse.class)
+                .value(response -> {
+                    assert response.getCode().equals(USER_NOT_FOUND.getCode());
+                    assert response.getMessage().equals(USER_NOT_FOUND.getMessage());
+                });
+    }
+
+    @Test
+    @DisplayName("Expect PostNotFoundException When Comment Post Identifier Is Invalid")
+    void Expect_PostNotFoundException_When_CommentPostIdentifierIsInvalid() throws JsonProcessingException {
+        CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
+        Comment comment=TestUtilsComment.buildCommentMock();
+        CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
+        when(commentRestMapper.toComment(any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+        when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new PostNotFoundException()));
+        webTestClient.post()
+                .uri("/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(objectMapper.writeValueAsString(createCommentRequest))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorResponse.class)
+                .value(response -> {
+                    assert response.getCode().equals(POST_NOT_FOUND.getCode());
+                    assert response.getMessage().equals(POST_NOT_FOUND.getMessage());
                 });
     }
 

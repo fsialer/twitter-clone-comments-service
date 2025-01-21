@@ -1,6 +1,8 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -22,11 +24,33 @@ import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
 public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CommentNotFoundException.class)
-    public Mono<ErrorResponse> handleUserNotFoundException() {
+    public Mono<ErrorResponse> handleCommentNotFoundException() {
         return Mono.just(ErrorResponse.builder()
                 .code(COMMENT_NOT_FOUND.getCode())
                 .type(FUNCTIONAL)
                 .message(COMMENT_NOT_FOUND.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .build());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public Mono<ErrorResponse> handleUserNotFoundException() {
+        return Mono.just(ErrorResponse.builder()
+                .code(USER_NOT_FOUND.getCode())
+                .type(FUNCTIONAL)
+                .message(USER_NOT_FOUND.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .build());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostNotFoundException.class)
+    public Mono<ErrorResponse> handlePostNotFoundException() {
+        return Mono.just(ErrorResponse.builder()
+                .code(POST_NOT_FOUND.getCode())
+                .type(FUNCTIONAL)
+                .message(POST_NOT_FOUND.getMessage())
                 .timestamp(LocalDate.now().toString())
                 .build());
     }
@@ -52,9 +76,9 @@ public class GlobalControllerAdvice {
     public Mono<ErrorResponse> handleException(Exception e) {
 
         return Mono.just(ErrorResponse.builder()
-                .code(INTERNAL_SERVER_ERROR.getCode())
+                .code(COMMENT_INTERNAL_SERVER_ERROR.getCode())
                 .type(SYSTEM)
-                .message(INTERNAL_SERVER_ERROR.getMessage())
+                .message(COMMENT_INTERNAL_SERVER_ERROR.getMessage())
                 .details(Collections.singletonList(e.getMessage()))
                 .timestamp(LocalDate.now().toString())
                 .build());

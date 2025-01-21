@@ -2,7 +2,11 @@ package com.fernando.ms.comments.app.application.services;
 
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
+import com.fernando.ms.comments.app.application.ports.output.ExternalPostOutputPort;
+import com.fernando.ms.comments.app.application.ports.output.ExternalUserOutputPort;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CommentService implements CommentInputPort {
     private final CommentPersistencePort commentPersistencePort;
+    private final ExternalUserOutputPort externalUserOutputPort;
+    private final ExternalPostOutputPort externalPostOutputPort;
+
     @Override
     public Flux<Comment> findAll() {
         return commentPersistencePort.findAll();
@@ -26,7 +33,19 @@ public class CommentService implements CommentInputPort {
 
     @Override
     public Mono<Comment> save(Comment comment) {
-        return commentPersistencePort.save(comment);
+        return externalUserOutputPort.verify(comment.getUser().getId())
+                .flatMap(userExists->{
+                    if(Boolean.FALSE.equals(userExists)){
+                        return Mono.error(UserNotFoundException::new);
+                    }
+                    return externalPostOutputPort.verify(comment.getPost().getId())
+                            .flatMap(postExists->{
+                                if(Boolean.FALSE.equals(postExists)){
+                                    return Mono.error(PostNotFoundException::new);
+                                }
+                                return commentPersistencePort.save(comment);
+                            });
+                });
     }
 
     @Override

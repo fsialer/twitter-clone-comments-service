@@ -1,7 +1,11 @@
 package com.fernando.ms.comments.app.application.services;
 
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
+import com.fernando.ms.comments.app.application.ports.output.ExternalPostOutputPort;
+import com.fernando.ms.comments.app.application.ports.output.ExternalUserOutputPort;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +19,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +27,12 @@ import static org.mockito.Mockito.when;
 public class CommentServiceTest {
     @Mock
     private CommentPersistencePort commentPersistencePort;
+
+    @Mock
+    private ExternalPostOutputPort externalPostOutputPort;
+
+    @Mock
+    private ExternalUserOutputPort externalUserOutputPort;
 
     @InjectMocks
     private CommentService commentService;
@@ -140,13 +149,50 @@ public class CommentServiceTest {
     @DisplayName("When Post Identifier Is Correct Expect A List Of Comments")
     void When_PostIdentifierIsCorrect_Expect_AListOfComments() {
         Comment comment = TestUtilsComment.buildCommentMock();
+        when(externalUserOutputPort.verify(anyLong())).thenReturn(Mono.just(true));
+        when(externalPostOutputPort.verify(anyString())).thenReturn(Mono.just(true));
         when(commentPersistencePort.findAllByPost(anyString())).thenReturn(Flux.just(comment));
 
         Flux<Comment> comments = commentService.findAllByPost("postId");
         StepVerifier.create(comments)
                 .expectNext(comment)
                 .verifyComplete();
+        Mockito.verify(externalUserOutputPort, times(1)).verify(anyLong());
+        Mockito.verify(externalPostOutputPort, times(1)).verify(anyString());
         Mockito.verify(commentPersistencePort, times(1)).findAllByPost(anyString());
+    }
+
+    @Test
+    @DisplayName("Expect UserNotFoundException When User Does Not Exist")
+    void Expect_UserNotFoundException_When_UserDoesNotExist() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(externalUserOutputPort.verify(anyLong())).thenReturn(Mono.just(false));
+
+        Mono<Comment> savedComment = commentService.save(comment);
+
+        StepVerifier.create(savedComment)
+                .expectError(UserNotFoundException.class)
+                .verify();
+        Mockito.verify(externalUserOutputPort, times(1)).verify(anyLong());
+        Mockito.verify(externalPostOutputPort, times(0)).verify(anyString());
+        Mockito.verify(commentPersistencePort, times(0)).save(any(Comment.class));
+    }
+
+    @Test
+    @DisplayName("Expect PostNotFoundException When Post Does Not Exist")
+    void Expect_PostNotFoundException_When_PostDoesNotExist() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        when(externalUserOutputPort.verify(anyLong())).thenReturn(Mono.just(true));
+        when(externalPostOutputPort.verify(anyString())).thenReturn(Mono.just(false));
+
+        Mono<Comment> savedComment = commentService.save(comment);
+
+        StepVerifier.create(savedComment)
+                .expectError(PostNotFoundException.class)
+                .verify();
+        Mockito.verify(externalUserOutputPort, times(1)).verify(anyLong());
+        Mockito.verify(externalPostOutputPort, times(1)).verify(anyString());
+        Mockito.verify(commentPersistencePort, times(0)).save(any(Comment.class));
     }
 
 }
