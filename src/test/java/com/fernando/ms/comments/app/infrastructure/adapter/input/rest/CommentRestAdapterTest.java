@@ -9,6 +9,8 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.Co
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.models.response.ExistsUserResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -153,5 +155,24 @@ public class CommentRestAdapterTest {
 
         Mockito.verify(commentInputPort, times(1)).findAllByPost(anyString());
         Mockito.verify(commentRestMapper, times(1)).toCommentsResponse(any(Flux.class));
+    }
+
+    @Test
+    @DisplayName("When Comment Verification Is Incorrect Expect Comment Do Not Verified")
+    void When_CommentVerificationIsIncorrect_Expect_CommentDoNotVerified() {
+        ExistsCommentResponse existsCommentResponse = TestUtilsComment.buildExistsCommentResponseMock();
+        existsCommentResponse.setExists(false);
+        when(commentInputPort.verifyById(anyString())).thenReturn(Mono.just(false));
+        when(commentRestMapper.toExistsCommentResponse(anyBoolean())).thenReturn(existsCommentResponse);
+
+        webTestClient.get()
+                .uri("/comments/{id}/verify", 1L)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.exists").isEqualTo(false);
+
+        Mockito.verify(commentInputPort, times(1)).verifyById(anyString());
+        Mockito.verify(commentRestMapper, times(1)).toExistsCommentResponse(anyBoolean());
     }
 }

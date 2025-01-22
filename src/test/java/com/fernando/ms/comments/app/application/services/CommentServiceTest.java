@@ -195,4 +195,18 @@ public class CommentServiceTest {
         Mockito.verify(commentPersistencePort, times(0)).save(any(Comment.class));
     }
 
+    @Test
+    @DisplayName("When Comment Verification Is Successful Expect Comment Verified")
+    void When_UserVerificationIsSuccessful_Expect_UserVerified() {
+        when(commentPersistencePort.verifyById(anyString())).thenReturn(Mono.just(true));
+
+        Mono<Boolean> result = commentService.verifyById("6786d05449b7975d2e3c3626");
+
+        StepVerifier.create(result)
+                .expectNext(true)
+                .verifyComplete();
+
+        Mockito.verify(commentPersistencePort, times(1)).verifyById(anyString());
+    }
+
 }

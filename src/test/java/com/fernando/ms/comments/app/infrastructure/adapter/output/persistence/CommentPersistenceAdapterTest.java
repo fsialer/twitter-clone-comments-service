@@ -18,8 +18,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -113,6 +113,17 @@ public class CommentPersistenceAdapterTest {
 
         Mockito.verify(commentReactiveMongoRepository, times(1)).findAllByCommentPost(any(CommentPost.class));
         Mockito.verify(commentPersistenceMapper, times(1)).toComments(any(Flux.class));
+    }
+
+    @Test
+    @DisplayName("When Comment Verification Is Successful Expect Comment Verified")
+    void When_CommentVerificationIsSuccessful_Expect_CommentVerified() {
+        when(commentReactiveMongoRepository.existsById(anyString())).thenReturn(Mono.just(true));
+        Mono<Boolean> result = commentPersistenceAdapter.verifyById("6786d05449b7975d2e3c3626");
+        StepVerifier.create(result)
+                .expectNext(true)
+                .verifyComplete();
+        Mockito.verify(commentReactiveMongoRepository, times(1)).existsById(anyString());
     }
 
 }

@@ -71,4 +71,9 @@ public class CommentService implements CommentInputPort {
     public Flux<Comment> findAllByPost(String postId) {
         return commentPersistencePort.findAllByPost(postId);
     }
+
+    @Override
+    public Mono<Boolean> verifyById(String id) {
+        return commentPersistencePort.verifyById(id);
+    }
 }

@@ -6,6 +6,7 @@ import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import reactor.core.publisher.Flux;
@@ -33,6 +34,12 @@ public interface CommentRestMapper {
     default Post mapPost(CreateCommentRequest rq){
         return Post.builder()
                 .id(rq.getPostId())
+                .build();
+    }
+
+    default ExistsCommentResponse toExistsCommentResponse(Boolean exists){
+        return ExistsCommentResponse.builder()
+                .exists(exists)
                 .build();
     }
 }

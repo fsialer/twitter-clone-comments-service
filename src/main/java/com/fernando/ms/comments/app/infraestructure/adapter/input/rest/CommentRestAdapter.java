@@ -5,6 +5,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.Co
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,5 +62,13 @@ public class CommentRestAdapter {
     @GetMapping("/{idPost}/post")
     public Flux<CommentResponse> findAllByPost(@PathVariable("idPost") String postId){
         return  commentRestMapper.toCommentsResponse(commentInputPort.findAllByPost(postId));
+    }
+
+    @GetMapping("/{id}/verify")
+    public Mono<ResponseEntity<ExistsCommentResponse>> verify(@PathVariable("id") String id){
+        return commentInputPort.verifyById(id)
+                .flatMap(exists->{
+                    return Mono.just(ResponseEntity.ok().body(commentRestMapper.toExistsCommentResponse(exists)));
+                });
     }
 }

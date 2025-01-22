@@ -68,4 +68,9 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
                 .build();
         return commentPersistenceMapper.toComments(commentReactiveMongoRepository.findAllByCommentPost(commentPost));
     }
+
+    @Override
+    public Mono<Boolean> verifyById(String id) {
+        return commentReactiveMongoRepository.existsById(id);
+    }
 }
