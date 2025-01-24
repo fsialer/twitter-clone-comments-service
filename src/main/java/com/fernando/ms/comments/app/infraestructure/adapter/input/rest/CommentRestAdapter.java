@@ -1,10 +1,12 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
+import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,8 +62,8 @@ public class CommentRestAdapter {
     }
 
     @GetMapping("/{idPost}/post")
-    public Flux<CommentResponse> findAllByPost(@PathVariable("idPost") String postId){
-        return  commentRestMapper.toCommentsResponse(commentInputPort.findAllByPost(postId));
+    public Flux<CommentUserResponse> findAllByPost(@PathVariable("idPost") String postId){
+        return commentRestMapper.toCommentsUserResponse(commentInputPort.findAllByPost(postId));
     }
 
     @GetMapping("/{id}/verify")

@@ -7,7 +7,9 @@ import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.domain.models.Comment;
+import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
+import com.fernando.ms.comments.app.utils.TestUtilsUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -207,6 +209,26 @@ public class CommentServiceTest {
                 .verifyComplete();
 
         Mockito.verify(commentPersistencePort, times(1)).verifyById(anyString());
+    }
+
+    @Test
+    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments With User Information")
+    void When_PostIdentifierIsCorrect_Expect_AListOfCommentsWithUserInformation() {
+        Comment comment = TestUtilsComment.buildCommentMock();
+        User user = TestUtilsUser.buildUserMock();
+        comment.setUser(user);
+
+        when(commentPersistencePort.findAllByPost(anyString())).thenReturn(Flux.just(comment));
+        when(externalUserOutputPort.findById(anyLong())).thenReturn(Mono.just(user));
+
+        Flux<Comment> comments = commentService.findAllByPost("postId");
+
+        StepVerifier.create(comments)
+                .expectNextMatches(c -> c.getUser().getId().equals(user.getId()))
+                .verifyComplete();
+
+        Mockito.verify(commentPersistencePort, times(1)).findAllByPost(anyString());
+        Mockito.verify(externalUserOutputPort, times(1)).findById(anyLong());
     }
 
 }

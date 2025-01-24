@@ -4,14 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.domain.models.Comment;
+import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.models.response.ExistsUserResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
+import com.fernando.ms.comments.app.utils.TestUtilsUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -174,5 +177,27 @@ public class CommentRestAdapterTest {
 
         Mockito.verify(commentInputPort, times(1)).verifyById(anyString());
         Mockito.verify(commentRestMapper, times(1)).toExistsCommentResponse(anyBoolean());
+    }
+
+    @Test
+    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments With User Information")
+    void When_PostIdentifierIsCorrect_Expect_AListOfCommentsWithUserInformation() {
+        CommentUserResponse commentUserResponse = TestUtilsComment.buildCommentUserResponseMock();
+        Comment comment = TestUtilsComment.buildCommentMock();
+        User user = TestUtilsUser.buildUserMock();
+        comment.setUser(user);
+
+        when(commentInputPort.findAllByPost(anyString())).thenReturn(Flux.just(comment));
+        when(commentRestMapper.toCommentsUserResponse(any(Flux.class))).thenReturn(Flux.just(commentUserResponse));
+
+        webTestClient.get()
+                .uri("/comments/{idPost}/post", "1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$[0].user.id").isEqualTo(user.getId());
+
+        Mockito.verify(commentInputPort, times(1)).findAllByPost(anyString());
+        Mockito.verify(commentRestMapper, times(1)).toCommentsUserResponse(any(Flux.class));
     }
 }

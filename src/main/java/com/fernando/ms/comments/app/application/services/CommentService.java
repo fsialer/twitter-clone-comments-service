@@ -69,7 +69,14 @@ public class CommentService implements CommentInputPort {
 
     @Override
     public Flux<Comment> findAllByPost(String postId) {
-        return commentPersistencePort.findAllByPost(postId);
+        return commentPersistencePort.findAllByPost(postId)
+                .flatMap(comments->{
+                    return externalUserOutputPort.findById(comments.getUser().getId())
+                            .flatMap(user->{
+                                comments.setUser(user);
+                                return Mono.just(comments);
+                            });
+                });
     }
 
     @Override

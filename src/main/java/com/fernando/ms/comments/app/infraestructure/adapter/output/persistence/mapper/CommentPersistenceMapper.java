@@ -1,6 +1,7 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper;
 
 import com.fernando.ms.comments.app.domain.models.Comment;
+import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,7 +20,8 @@ public interface CommentPersistenceMapper {
         return comment.map(this::toComment);
     }
 
-    Comment toComment(CommentDocument post);
+    @Mapping(target = "user",expression = "java(mapUser(comment))")
+    Comment toComment(CommentDocument comment);
 
     @Mapping(target = "dateComment",expression = "java(mapDateComment())")
     @Mapping(target = "createdAt",expression = "java(mapCreatedAt())")
@@ -36,5 +38,11 @@ public interface CommentPersistenceMapper {
 
     default LocalDateTime mapUpdatedAt(){
         return LocalDateTime.now();
+    }
+
+    default User mapUser(CommentDocument comment){
+        return User.builder()
+                .id(comment.getCommentUser().getUserId())
+                .build();
     }
 }

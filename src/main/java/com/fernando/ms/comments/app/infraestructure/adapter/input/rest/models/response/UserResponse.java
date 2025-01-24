@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ExistsCommentResponse {
-    private Boolean exists;
+public class UserResponse {
+    private Long id;
+    private String names;
 }

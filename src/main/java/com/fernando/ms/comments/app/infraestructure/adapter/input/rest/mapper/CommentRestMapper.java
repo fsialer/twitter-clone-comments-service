@@ -6,7 +6,9 @@ import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import reactor.core.publisher.Flux;
@@ -16,6 +18,20 @@ public interface CommentRestMapper {
     default Flux<CommentResponse> toCommentsResponse(Flux<Comment> comments){
         return comments.map(this::toCommentResponse);
     }
+
+    default Flux<CommentUserResponse> toCommentsUserResponse(Flux<Comment> comments){
+        return comments.map(this::toCommentUserResponse);
+    }
+
+    default UserResponse toUserResponse(Comment comment){
+        return UserResponse.builder()
+                .id(comment.getUser().getId())
+                .names(comment.getUser().getNames())
+                .build();
+    }
+
+    @Mapping(target="user", expression = "java(toUserResponse(comment))")
+    CommentUserResponse toCommentUserResponse(Comment comment);
 
     CommentResponse toCommentResponse(Comment comment);
 
