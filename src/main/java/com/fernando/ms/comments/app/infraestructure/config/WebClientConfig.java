@@ -7,12 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-@RequiredArgsConstructor
 public class WebClientConfig {
     @Value("${users-service.url}")
-    private final String apiUser;
+    private String apiUser;
     @Value("${posts-service.url}")
-    private final String apiPost;
+    private String apiPost;
 
     @Bean
     public WebClient webClientUser(WebClient.Builder builder) {
