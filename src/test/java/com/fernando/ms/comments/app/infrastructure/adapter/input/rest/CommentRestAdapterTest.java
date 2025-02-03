@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -35,10 +35,10 @@ public class CommentRestAdapterTest {
     @Autowired
     private WebTestClient webTestClient;
 
-    @MockBean
+    @MockitoBean
     private CommentInputPort commentInputPort;
 
-    @MockBean
+    @MockitoBean
     private CommentRestMapper commentRestMapper;
 
     @Autowired
@@ -88,7 +88,7 @@ public class CommentRestAdapterTest {
         Comment comment = TestUtilsComment.buildCommentMock();
         CommentResponse commentResponse = TestUtilsComment.buildCommentResponseMock();
 
-        when(commentRestMapper.toComment(any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toComment(anyLong(),any(CreateCommentRequest.class))).thenReturn(comment);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.just(comment));
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
 
@@ -101,7 +101,7 @@ public class CommentRestAdapterTest {
                 .expectBody()
                 .jsonPath("$.content").isEqualTo("comment");
 
-        Mockito.verify(commentRestMapper, times(1)).toComment(any(CreateCommentRequest.class));
+        Mockito.verify(commentRestMapper, times(1)).toComment(anyLong(),any(CreateCommentRequest.class));
         Mockito.verify(commentInputPort, times(1)).save(any(Comment.class));
         Mockito.verify(commentRestMapper, times(1)).toCommentResponse(any(Comment.class));
     }

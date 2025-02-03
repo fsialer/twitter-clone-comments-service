@@ -35,15 +35,16 @@ public interface CommentRestMapper {
 
     CommentResponse toCommentResponse(Comment comment);
 
-    @Mapping(target = "user",expression = "java(mapUser(rq))")
+
+    @Mapping(target = "user",expression = "java(mapUser(userId))")
     @Mapping(target = "post",expression = "java(mapPost(rq))")
-    Comment toComment(CreateCommentRequest rq);
+    Comment toComment(Long userId,CreateCommentRequest rq);
 
     Comment toComment(UpdateCommentRequest rq);
 
-    default User mapUser(CreateCommentRequest rq){
+    default User mapUser(Long userId){
         return User.builder()
-                .id(rq.getUserId())
+                .id(userId)
                 .build();
     }
 

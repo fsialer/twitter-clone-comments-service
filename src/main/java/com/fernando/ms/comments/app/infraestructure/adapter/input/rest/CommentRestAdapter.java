@@ -1,7 +1,6 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
-import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
@@ -39,8 +38,9 @@ public class CommentRestAdapter {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<CommentResponse>> save(@Valid @RequestBody CreateCommentRequest rq){
-        return commentInputPort.save(commentRestMapper.toComment(rq))
+    public Mono<ResponseEntity<CommentResponse>> save(@RequestHeader("X-User-Id") Long userId,
+                                                      @Valid @RequestBody CreateCommentRequest rq){
+        return commentInputPort.save(commentRestMapper.toComment(userId,rq))
                 .flatMap(comment -> {
                     String location = "/comments/".concat(comment.getId());
                     return Mono.just(ResponseEntity.created(URI.create(location)).body(commentRestMapper.toCommentResponse(comment)));

@@ -17,22 +17,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(controllers = {CommentRestAdapter.class})
 public class GlobalControllerAdviceTest {
-    @MockBean
+    @MockitoBean
     private CommentRestMapper commentRestMapper;
 
-    @MockBean
+    @MockitoBean
     private CommentInputPort commentInputPort;
 
     @Autowired
@@ -77,7 +76,6 @@ public class GlobalControllerAdviceTest {
     void Expect_WebExchangeBindException_When_CommentInformationIsInvalid() throws JsonProcessingException {
         CreateCommentRequest createCommentRequest= CreateCommentRequest.builder()
                 .content("")
-                .userId(1L)
                 .postId("1")
                 .build();
 
@@ -100,7 +98,7 @@ public class GlobalControllerAdviceTest {
         CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
         Comment comment=TestUtilsComment.buildCommentMock();
         CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
-        when(commentRestMapper.toComment(any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toComment(anyLong(),any(CreateCommentRequest.class))).thenReturn(comment);
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new UserNotFoundException()));
 
@@ -123,7 +121,7 @@ public class GlobalControllerAdviceTest {
         CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
         Comment comment=TestUtilsComment.buildCommentMock();
         CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
-        when(commentRestMapper.toComment(any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toComment(anyLong(),any(CreateCommentRequest.class))).thenReturn(comment);
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new PostNotFoundException()));
         webTestClient.post()

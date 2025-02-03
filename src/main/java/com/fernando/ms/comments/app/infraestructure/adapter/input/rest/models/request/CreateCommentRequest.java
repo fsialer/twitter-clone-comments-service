@@ -12,8 +12,8 @@ import lombok.*;
 public class CreateCommentRequest {
     @NotBlank(message = "Field content cannot be null or blank")
     private String content;
-    @NotNull(message = "Field userId cannot be null")
-    private Long userId;
+//    @NotNull(message = "Field userId cannot be null")
+//    private Long userId;
     @NotBlank(message = "Field postId cannot be null or blank")
     private String postId;
 }
