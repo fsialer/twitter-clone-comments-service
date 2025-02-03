@@ -57,7 +57,6 @@ public class TestUtilsComment {
         return CreateCommentRequest.builder()
                 .content("comment")
                 .postId("1")
-                .userId(1L)
                 .build();
     }
 

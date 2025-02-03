@@ -94,6 +94,7 @@ public class CommentRestAdapterTest {
 
         webTestClient.post()
                 .uri("/comments")
+                .header("X-User-Id","1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(createPostRequest))
                 .exchange()
