@@ -7,7 +7,9 @@ spring:
     default-property-inclusion: NON_NULL
   data:
     mongodb:
-      uri: ${DB_URL:mongodb://localhost:27017/tc_comments_db}
+      uri: ${DB_HOST:mongodb://localhost:27017/tc_comments_db}
+      username: ${DB_USERNAME:root}
+      password: ${DB_PASSWORD:1234}
 users-service:
   url: ${USER_URL:http://localhost:8080/users}
 posts-service:

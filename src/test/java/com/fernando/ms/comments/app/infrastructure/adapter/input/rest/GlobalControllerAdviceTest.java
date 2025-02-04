@@ -46,7 +46,7 @@ public class GlobalControllerAdviceTest {
         when(commentInputPort.findById(anyString())).thenReturn(Mono.error(new CommentNotFoundException()));
 
         webTestClient.get()
-                .uri("/comments/{id}","1")
+                .uri("/v1/comments/{id}","1")
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(ErrorResponse.class)
@@ -62,7 +62,7 @@ public class GlobalControllerAdviceTest {
         when(commentInputPort.findById(anyString())).thenReturn(Mono.error(new RuntimeException("Unexpected error")));
 
         webTestClient.get()
-                .uri("/comments/{id}","1")
+                .uri("/v1/comments/{id}","1")
                 .exchange()
                 .expectStatus().is5xxServerError()
                 .expectBody(ErrorResponse.class)
@@ -80,7 +80,7 @@ public class GlobalControllerAdviceTest {
                 .build();
 
         webTestClient.post()
-                .uri("/comments")
+                .uri("/v1/comments")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(createCommentRequest))
                 .exchange()
@@ -103,7 +103,7 @@ public class GlobalControllerAdviceTest {
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new UserNotFoundException()));
 
         webTestClient.post()
-                .uri("/comments")
+                .uri("/v1/comments")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(createCommentRequest))
                 .exchange()
@@ -125,7 +125,7 @@ public class GlobalControllerAdviceTest {
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new PostNotFoundException()));
         webTestClient.post()
-                .uri("/comments")
+                .uri("/v1/comments")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(createCommentRequest))
                 .exchange()

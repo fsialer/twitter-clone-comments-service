@@ -54,7 +54,7 @@ public class CommentRestAdapterTest {
         when(commentRestMapper.toCommentsResponse(any(Flux.class))).thenReturn(Flux.just(commentResponse));
 
         webTestClient.get()
-                .uri("/comments")
+                .uri("/v1/comments")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -71,7 +71,7 @@ public class CommentRestAdapterTest {
         when(commentInputPort.findById(anyString())).thenReturn(Mono.just(comment));
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
         webTestClient.get()
-                .uri("/comments/{id}",1L)
+                .uri("/v1/comments/{id}",1L)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -93,7 +93,7 @@ public class CommentRestAdapterTest {
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
 
         webTestClient.post()
-                .uri("/comments")
+                .uri("/v1/comments")
                 .header("X-User-Id","1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(createPostRequest))
@@ -118,7 +118,7 @@ public class CommentRestAdapterTest {
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
 
         webTestClient.put()
-                .uri("/comments/{id}","1")
+                .uri("/v1/comments/{id}","1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(objectMapper.writeValueAsString(updateCommentRequest))
                 .exchange()
@@ -133,7 +133,7 @@ public class CommentRestAdapterTest {
         when(commentInputPort.delete(anyString())).thenReturn(Mono.empty());
 
         webTestClient.delete()
-                .uri("/comments/{id}", "1")
+                .uri("/v1/comments/{id}", "1")
                 .exchange()
                 .expectStatus().isNoContent();
 
@@ -150,7 +150,7 @@ public class CommentRestAdapterTest {
         when(commentRestMapper.toCommentsResponse(any(Flux.class))).thenReturn(Flux.just(commentResponse));
 
         webTestClient.get()
-                .uri("/comments/{idPost}/post", "1")
+                .uri("/v1/comments/{idPost}/post", "1")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -169,7 +169,7 @@ public class CommentRestAdapterTest {
         when(commentRestMapper.toExistsCommentResponse(anyBoolean())).thenReturn(existsCommentResponse);
 
         webTestClient.get()
-                .uri("/comments/{id}/verify", 1L)
+                .uri("/v1/comments/{id}/verify", 1L)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -191,7 +191,7 @@ public class CommentRestAdapterTest {
         when(commentRestMapper.toCommentsUserResponse(any(Flux.class))).thenReturn(Flux.just(commentUserResponse));
 
         webTestClient.get()
-                .uri("/comments/{idPost}/post", "1")
+                .uri("/v1/comments/{idPost}/post", "1")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()

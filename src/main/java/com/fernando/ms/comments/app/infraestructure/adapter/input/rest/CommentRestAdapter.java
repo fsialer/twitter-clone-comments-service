@@ -19,7 +19,7 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/comments")
+@RequestMapping("/v1/comments")
 public class CommentRestAdapter {
     private final CommentInputPort commentInputPort;
     private final CommentRestMapper commentRestMapper;
