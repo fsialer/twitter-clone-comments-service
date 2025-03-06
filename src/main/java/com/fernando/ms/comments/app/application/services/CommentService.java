@@ -4,6 +4,8 @@ import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
 import com.fernando.ms.comments.app.application.ports.output.ExternalPostOutputPort;
 import com.fernando.ms.comments.app.application.ports.output.ExternalUserOutputPort;
+import com.fernando.ms.comments.app.application.services.proxy.IProcess;
+import com.fernando.ms.comments.app.application.services.proxy.ProcessFactory;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
@@ -33,50 +35,31 @@ public class CommentService implements CommentInputPort {
 
     @Override
     public Mono<Comment> save(Comment comment) {
-        return externalUserOutputPort.verify(comment.getUser().getId())
-                .flatMap(userExists->{
-                    if(Boolean.FALSE.equals(userExists)){
-                        return Mono.error(UserNotFoundException::new);
-                    }
-                    return externalPostOutputPort.verify(comment.getPost().getId())
-                            .flatMap(postExists->{
-                                if(Boolean.FALSE.equals(postExists)){
-                                    return Mono.error(PostNotFoundException::new);
-                                }
-                                return commentPersistencePort.save(comment);
-                            });
-                });
+        IProcess iProcessComment = ProcessFactory.validateSaveComment(externalUserOutputPort, externalPostOutputPort);
+        return iProcessComment.doProcess(comment).flatMap(commentPersistencePort::save);
     }
 
     @Override
     public Mono<Comment> update(String id, Comment comment) {
-        return commentPersistencePort.findById(id)
-                .switchIfEmpty(Mono.error(CommentNotFoundException::new))
-                .flatMap(commentUpdated->{
-                    commentUpdated.setContent(comment.getContent());
-                    return commentPersistencePort.save(commentUpdated);
-                });
+        IProcess iProcessComment = ProcessFactory.validateUpdateComment(commentPersistencePort, id);
+        return  iProcessComment.doProcess(comment).flatMap(commentPersistencePort::save);
     }
 
     @Override
     public Mono<Void> delete(String id) {
         return commentPersistencePort.findById(id)
                 .switchIfEmpty(Mono.error(CommentNotFoundException::new))
-                .flatMap(commentDeleted -> {
-                    return commentPersistencePort.delete(id);
-                });
+                .flatMap(commentDeleted -> commentPersistencePort.delete(id));
     }
 
     @Override
     public Flux<Comment> findAllByPost(String postId) {
         return commentPersistencePort.findAllByPost(postId)
-                .flatMap(comments->{
-                    return externalUserOutputPort.findById(comments.getUser().getId())
+                .flatMap(comments-> externalUserOutputPort.findById(comments.getUser().getId())
                             .flatMap(user->{
                                 comments.setUser(user);
                                 return Mono.just(comments);
-                            });
-                });
+                            }));
     }
 
     @Override
