@@ -1,7 +1,10 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
+import com.fernando.ms.comments.app.application.ports.input.CommentDataInputPort;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentDataRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
@@ -23,6 +26,8 @@ import java.net.URI;
 public class CommentRestAdapter {
     private final CommentInputPort commentInputPort;
     private final CommentRestMapper commentRestMapper;
+    private final CommentDataInputPort commentDataInputPort;
+    private final CommentDataRestMapper commentDataRestMapper;
 
     @GetMapping
     public Flux<CommentResponse> findAll(){
@@ -72,5 +77,14 @@ public class CommentRestAdapter {
                 .flatMap(exists->{
                     return Mono.just(ResponseEntity.ok().body(commentRestMapper.toExistsCommentResponse(exists)));
                 });
+    }
+
+    @PostMapping("/data")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> saveData(
+            @RequestHeader("X-User-Id") String userId,
+            @Valid @RequestBody CreateCommentDataRequest rq
+    ) {
+        return commentDataInputPort.save(commentDataRestMapper.toCommentData(userId,rq));
     }
 }

@@ -1,6 +1,7 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
 import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
@@ -51,6 +52,19 @@ public class GlobalControllerAdvice {
                 .code(POST_NOT_FOUND.getCode())
                 .type(FUNCTIONAL)
                 .message(POST_NOT_FOUND.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CommentRuleException.class)
+    public Mono<ErrorResponse> handleCommentRuleException(
+            CommentRuleException e) {
+        return Mono.just(ErrorResponse.builder()
+                .code(COMMENT_RULE_EXCEPTION.getCode())
+                .type(FUNCTIONAL)
+                .message(COMMENT_RULE_EXCEPTION.getMessage())
+                .details(Collections.singletonList(e.getMessage()))
                 .timestamp(LocalDate.now().toString())
                 .build());
     }

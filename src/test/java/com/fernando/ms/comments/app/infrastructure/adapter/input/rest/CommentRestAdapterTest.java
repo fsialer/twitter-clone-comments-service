@@ -2,15 +2,21 @@ package com.fernando.ms.comments.app.infrastructure.adapter.input.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fernando.ms.comments.app.application.ports.input.CommentDataInputPort;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
+import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentDataRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +47,12 @@ public class CommentRestAdapterTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private CommentDataInputPort commentDataInputPort;
+
+    @MockitoBean
+    private CommentDataRestMapper commentDataRestMapper;
 
     @Test
     @DisplayName("When Comments Are Exists Expect Comments Information Return Successfully")
@@ -200,4 +212,26 @@ public class CommentRestAdapterTest {
         Mockito.verify(commentInputPort, times(1)).findAllByPostId(anyString());
         Mockito.verify(commentRestMapper, times(1)).toCommentsUserResponse(any(Flux.class));
     }
+
+    @Test
+    @DisplayName("when CommentData Is Valid Expect Save Data Successfully")
+    void when_CommentDataIsValid_Expect_SaveDataSuccessfully() {
+        CreateCommentDataRequest createPostDataRequest = TestUtilCommentData.buildCreateCommentDataRequestMock();
+        when(commentDataRestMapper.toCommentData(any(String.class), any(CreateCommentDataRequest.class)))
+                .thenReturn(TestUtilCommentData.buildCommentDataMock());
+        when(commentDataInputPort.save(any())).thenReturn(Mono.empty());
+        webTestClient.post()
+                .uri("/v1/comments/data")
+                .header("X-User-Id", "1")
+                .bodyValue(createPostDataRequest)
+                .exchange()
+                .expectStatus().isNoContent();
+        Mockito.verify(commentDataRestMapper, times(1))
+                .toCommentData(any(String.class), any(CreateCommentDataRequest.class));
+        Mockito.verify(commentDataInputPort, times(1)).save(any());
+    }
+
+
+
+
 }

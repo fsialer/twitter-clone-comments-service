@@ -1,0 +1,26 @@
+package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence;
+
+import com.fernando.ms.comments.app.application.ports.output.CommentDataPersistencePort;
+import com.fernando.ms.comments.app.domain.models.CommentData;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper.CommentDataPersistenceMapper;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.repository.CommentDataRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+@Component
+@RequiredArgsConstructor
+public class CommentDataPersistenceAdapter implements CommentDataPersistencePort {
+    private final CommentDataRepository commentDataRepository;
+    private final CommentDataPersistenceMapper commentDataPersistenceMapper;
+    @Override
+    public Mono<Void> save(CommentData commentData) {
+        return commentDataPersistenceMapper.toCommentData(commentDataRepository.save(commentDataPersistenceMapper.toCommentDataDocument(commentData))).then();
+    }
+
+    @Override
+    public Mono<Boolean> verifyCommentData(String commentId, String userId) {
+        return commentDataRepository.existsByCommentIdAndUserId(commentId,userId);
+    }
+
+}

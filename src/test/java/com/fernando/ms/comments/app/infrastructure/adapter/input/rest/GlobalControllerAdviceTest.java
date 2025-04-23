@@ -2,19 +2,25 @@ package com.fernando.ms.comments.app.infrastructure.adapter.input.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fernando.ms.comments.app.application.ports.input.CommentDataInputPort;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
 import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentDataRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
+import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.MediaType;
@@ -24,6 +30,7 @@ import reactor.core.publisher.Mono;
 
 import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(controllers = {CommentRestAdapter.class})
@@ -39,6 +46,12 @@ public class GlobalControllerAdviceTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockitoBean
+    private CommentDataInputPort commentDataInputPort;
+
+    @MockitoBean
+    private CommentDataRestMapper commentDataRestMapper;
 
     @Test
     @DisplayName("Expect CommentNotFoundException When Comment Identifier Is Invalid")
@@ -139,5 +152,45 @@ public class GlobalControllerAdviceTest {
                     assert response.getMessage().equals(POST_NOT_FOUND.getMessage());
                 });
     }
+
+    @Test
+    @DisplayName("Expect CommentRuleException When PostData Is Invalid")
+    void Expect_CommentRuleException_When_PostDataIsInvalid() throws JsonProcessingException {
+        CreateCommentDataRequest createPostDataRequest = TestUtilCommentData.buildCreateCommentDataRequestMock();
+        when(commentDataRestMapper.toCommentData(any(String.class), any(CreateCommentDataRequest.class)))
+                .thenReturn(TestUtilCommentData.buildCommentDataMock());
+        when(commentDataInputPort.save(any())).thenReturn(Mono.error(new CommentRuleException("CommentData already exists")));
+        webTestClient.post()
+                .uri("/v1/comments/data")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-User-Id","1")
+                .bodyValue(objectMapper.writeValueAsString(createPostDataRequest))
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .value(response -> {
+                    assert response.getCode().equals(COMMENT_RULE_EXCEPTION.getCode());
+                    assert response.getMessage().equals(COMMENT_RULE_EXCEPTION.getMessage());
+                });
+    }
+
+    @Test
+    @DisplayName("when CommentData Is Valid Expect Save Data Successfully")
+    void when_PostDataIsValid_Expect_SaveDataSuccessfully() {
+        CreateCommentDataRequest createCommentDataRequest = TestUtilCommentData.buildCreateCommentDataRequestMock();
+        when(commentDataRestMapper.toCommentData(any(String.class), any(CreateCommentDataRequest.class)))
+                .thenReturn(TestUtilCommentData.buildCommentDataMock());
+        when(commentDataInputPort.save(any())).thenReturn(Mono.empty());
+        webTestClient.post()
+                .uri("/v1/comments/data")
+                .header("X-User-Id", "1")
+                .bodyValue(createCommentDataRequest)
+                .exchange()
+                .expectStatus().isNoContent();
+        Mockito.verify(commentDataRestMapper, times(1))
+                .toCommentData(any(String.class), any(CreateCommentDataRequest.class));
+        Mockito.verify(commentDataInputPort, times(1)).save(any());
+    }
+
 
 }
