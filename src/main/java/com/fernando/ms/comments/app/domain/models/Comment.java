@@ -13,6 +13,6 @@ public class Comment {
     private String id;
     private String content;
     private LocalDateTime dateComment;
-    private User user;
-    private Post post;
+    private String userId;
+    private String postId;
 }

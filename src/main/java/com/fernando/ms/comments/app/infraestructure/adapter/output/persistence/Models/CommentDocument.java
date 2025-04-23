@@ -1,7 +1,5 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models;
 
-import com.fernando.ms.comments.app.domain.models.Post;
-import com.fernando.ms.comments.app.domain.models.User;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,6 +19,6 @@ public class CommentDocument {
     private LocalDateTime dateComment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private CommentUser commentUser;
-    private CommentPost commentPost;
+    private String userId;
+    private String postId;
 }

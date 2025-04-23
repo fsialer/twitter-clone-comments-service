@@ -13,5 +13,5 @@ public class CommentUserResponse {
     private String id;
     private String content;
     private LocalDateTime dateComment;
-    private  UserResponse user;
+    private String userId;
 }

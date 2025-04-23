@@ -62,8 +62,8 @@ public class CommentRestAdapter {
     }
 
     @GetMapping("/{idPost}/post")
-    public Flux<CommentUserResponse> findAllByPost(@PathVariable("idPost") String postId){
-        return commentRestMapper.toCommentsUserResponse(commentInputPort.findAllByPost(postId));
+    public Flux<CommentUserResponse> findAllByPostId(@PathVariable("idPost") String postId){
+        return commentRestMapper.toCommentsUserResponse(commentInputPort.findAllByPostId(postId));
     }
 
     @GetMapping("/{id}/verify")

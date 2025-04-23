@@ -1,13 +1,9 @@
 package com.fernando.ms.comments.app.infrastructure.adapter.output.restclient;
 
 import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.PostRestClientAdapter;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.UserRestClientAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.client.PostWebClient;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.client.UserWebClient;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.models.response.ExistsPostResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.restclient.models.response.ExistsUserResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsPost;
-import com.fernando.ms.comments.app.utils.TestUtilsUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;

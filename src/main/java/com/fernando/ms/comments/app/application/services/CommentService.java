@@ -3,12 +3,8 @@ package com.fernando.ms.comments.app.application.services;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
 import com.fernando.ms.comments.app.application.ports.output.ExternalPostOutputPort;
-import com.fernando.ms.comments.app.application.ports.output.ExternalUserOutputPort;
-import com.fernando.ms.comments.app.application.services.proxy.IProcess;
-import com.fernando.ms.comments.app.application.services.proxy.ProcessFactory;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
-import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +15,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CommentService implements CommentInputPort {
     private final CommentPersistencePort commentPersistencePort;
-    private final ExternalUserOutputPort externalUserOutputPort;
     private final ExternalPostOutputPort externalPostOutputPort;
 
     @Override
@@ -35,14 +30,20 @@ public class CommentService implements CommentInputPort {
 
     @Override
     public Mono<Comment> save(Comment comment) {
-        IProcess iProcessComment = ProcessFactory.validateSaveComment(externalUserOutputPort, externalPostOutputPort);
-        return iProcessComment.doProcess(comment).flatMap(commentPersistencePort::save);
+        return externalPostOutputPort.verify(comment.getPostId())
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.error(new PostNotFoundException()))
+                .flatMap(postExists->commentPersistencePort.save(comment));
     }
 
     @Override
     public Mono<Comment> update(String id, Comment comment) {
-        IProcess iProcessComment = ProcessFactory.validateUpdateComment(commentPersistencePort, id);
-        return  iProcessComment.doProcess(comment).flatMap(commentPersistencePort::save);
+        return commentPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new))
+                .flatMap(commentUpdated->{
+                    commentUpdated.setContent(comment.getContent());
+                    return commentPersistencePort.save(commentUpdated);
+                });
     }
 
     @Override
@@ -53,13 +54,8 @@ public class CommentService implements CommentInputPort {
     }
 
     @Override
-    public Flux<Comment> findAllByPost(String postId) {
-        return commentPersistencePort.findAllByPost(postId)
-                .flatMap(comments-> externalUserOutputPort.findById(comments.getUser().getId())
-                            .flatMap(user->{
-                                comments.setUser(user);
-                                return Mono.just(comments);
-                            }));
+    public Flux<Comment> findAllByPostId(String postId) {
+        return commentPersistencePort.findAllByPostId(postId);
     }
 
     @Override

@@ -2,13 +2,11 @@ package com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper;
 
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.domain.models.Post;
-import com.fernando.ms.comments.app.domain.models.User;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import reactor.core.publisher.Flux;
@@ -23,30 +21,14 @@ public interface CommentRestMapper {
         return comments.map(this::toCommentUserResponse);
     }
 
-    default UserResponse toUserResponse(Comment comment){
-        return UserResponse.builder()
-                .id(comment.getUser().getId())
-                .names(comment.getUser().getNames())
-                .build();
-    }
-
-    @Mapping(target="user", expression = "java(toUserResponse(comment))")
     CommentUserResponse toCommentUserResponse(Comment comment);
 
     CommentResponse toCommentResponse(Comment comment);
 
-
-    @Mapping(target = "user",expression = "java(mapUser(userId))")
-    @Mapping(target = "post",expression = "java(mapPost(rq))")
     Comment toComment(Long userId,CreateCommentRequest rq);
 
     Comment toComment(UpdateCommentRequest rq);
 
-    default User mapUser(Long userId){
-        return User.builder()
-                .id(userId)
-                .build();
-    }
 
     default Post mapPost(CreateCommentRequest rq){
         return Post.builder()
