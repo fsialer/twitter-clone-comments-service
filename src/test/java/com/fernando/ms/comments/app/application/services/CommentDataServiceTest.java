@@ -2,11 +2,11 @@ package com.fernando.ms.comments.app.application.services;
 
 import com.fernando.ms.comments.app.application.ports.output.CommentDataPersistencePort;
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
+import com.fernando.ms.comments.app.domain.exception.CommentDataNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.domain.models.CommentData;
-import com.fernando.ms.comments.app.domain.models.Post;
 import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
@@ -83,6 +83,40 @@ public class CommentDataServiceTest {
         Mockito.verify(commentDataPersistencePort,never()).save(any(CommentData.class));
         Mockito.verify(commentPersistencePort,times(1)).findById(anyString());
         Mockito.verify(commentDataPersistencePort,times(1)).verifyCommentData(anyString(),anyString());
+    }
+
+    @Test
+    @DisplayName("when Comment Exists Expect Delete Successfully")
+    void when_CommentExists_Expect_DeleteSuccessfully() {
+
+        String commentId = "commentId123";
+        CommentData commentData = TestUtilCommentData.buildCommentDataMock();
+
+        when(commentDataPersistencePort.findById(anyString())).thenReturn(Mono.just(commentData));
+        when(commentDataPersistencePort.delete(anyString())).thenReturn(Mono.empty());
+
+        Mono<Void> result = commentDataService.delete(commentId);
+
+        StepVerifier.create(result)
+                .verifyComplete();
+
+        verify(commentDataPersistencePort, times(1)).findById(anyString());
+        verify(commentDataPersistencePort, times(1)).delete(anyString());
+    }
+
+    @Test
+    @DisplayName("Expect CommentDataNotFoundException When Comment Does Not Exist")
+    void Expect_CommentDataNotFoundException_When_CommentDoesNotExist() {
+        String postId = "postId123";
+        when(commentDataPersistencePort.findById(postId)).thenReturn(Mono.empty());
+        Mono<Void> result = commentDataService.delete(postId);
+
+        StepVerifier.create(result)
+                .expectError(CommentDataNotFoundException.class)
+                .verify();
+
+        verify(commentDataPersistencePort, times(1)).findById(postId);
+        verify(commentDataPersistencePort, never()).delete(postId);
     }
 
 }

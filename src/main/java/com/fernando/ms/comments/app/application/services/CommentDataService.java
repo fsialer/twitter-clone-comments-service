@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.application.services;
 import com.fernando.ms.comments.app.application.ports.input.CommentDataInputPort;
 import com.fernando.ms.comments.app.application.ports.output.CommentDataPersistencePort;
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
+import com.fernando.ms.comments.app.domain.exception.CommentDataNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
 import com.fernando.ms.comments.app.domain.models.CommentData;
@@ -25,4 +26,13 @@ public class CommentDataService implements CommentDataInputPort {
                         .switchIfEmpty(Mono.error(new CommentRuleException("CommentData already exists")))
                         .flatMap(verify->commentDataPersistencePort.save(commentData)));
     }
+
+    @Override
+    public Mono<Void> delete(String id) {
+        return commentDataPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(CommentDataNotFoundException::new))
+                .flatMap(postData->commentDataPersistencePort.delete(id));
+    }
+
+
 }

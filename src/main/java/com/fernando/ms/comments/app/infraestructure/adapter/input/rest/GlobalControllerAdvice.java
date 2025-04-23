@@ -1,9 +1,6 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.input.rest;
 
-import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
-import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
-import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
-import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.*;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -20,6 +17,7 @@ import java.util.Collections;
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.FUNCTIONAL;
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.SYSTEM;
 import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -52,6 +50,17 @@ public class GlobalControllerAdvice {
                 .code(POST_NOT_FOUND.getCode())
                 .type(FUNCTIONAL)
                 .message(POST_NOT_FOUND.getMessage())
+                .timestamp(LocalDate.now().toString())
+                .build());
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(CommentDataNotFoundException.class)
+    public Mono<ErrorResponse> handleCommentDataNotFoundException() {
+        return Mono.just(ErrorResponse.builder()
+                .code(COMMENT_DATA_NOT_FOUND.getCode())
+                .type(FUNCTIONAL)
+                .message(COMMENT_DATA_NOT_FOUND.getMessage())
                 .timestamp(LocalDate.now().toString())
                 .build());
     }

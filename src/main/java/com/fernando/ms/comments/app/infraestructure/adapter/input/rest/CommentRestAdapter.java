@@ -87,4 +87,13 @@ public class CommentRestAdapter {
     ) {
         return commentDataInputPort.save(commentDataRestMapper.toCommentData(userId,rq));
     }
+
+    @DeleteMapping("/data/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> deleteData(
+            @RequestHeader("X-User-Id") String userId,
+            @PathVariable String id
+    ) {
+        return commentDataInputPort.delete(id);
+    }
 }

@@ -11,6 +11,7 @@ public enum ErrorCatalog {
     USER_NOT_FOUND("COMMENT_MS_003", "User not found."),
     POST_NOT_FOUND("COMMENT_MS_004", "Post not found."),
     COMMENT_RULE_EXCEPTION("COMMENT_MS_005","Rule invalid"),
+    COMMENT_DATA_NOT_FOUND("COMMENT_MS_006","CommentData not found."),
     COMMENT_INTERNAL_SERVER_ERROR("COMMENT_MS_000", "Internal server error.");
     private final String code;
     private final String message;

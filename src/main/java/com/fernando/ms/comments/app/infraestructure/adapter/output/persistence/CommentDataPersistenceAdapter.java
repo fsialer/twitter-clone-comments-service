@@ -23,4 +23,14 @@ public class CommentDataPersistenceAdapter implements CommentDataPersistencePort
         return commentDataRepository.existsByCommentIdAndUserId(commentId,userId);
     }
 
+    @Override
+    public Mono<CommentData> findById(String id) {
+        return commentDataPersistenceMapper.toCommentData(commentDataRepository.findById(id));
+    }
+
+    @Override
+    public Mono<Void> delete(String id) {
+        return commentDataRepository.deleteById(id).then();
+    }
+
 }

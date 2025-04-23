@@ -231,6 +231,21 @@ public class CommentRestAdapterTest {
         Mockito.verify(commentDataInputPort, times(1)).save(any());
     }
 
+    @Test
+    @DisplayName("When Delete CommentData By Id Expect Complete Successfully")
+    void When_DeleteCommentDataById_Expect_CompleteSuccessfully() {
+        String postDataId = "postDataId123";
+        when(commentDataInputPort.delete(anyString())).thenReturn(Mono.empty());
+        webTestClient.delete()
+                .uri("/v1/comments/data/{id}", postDataId)
+                .header("X-User-Id", "1")
+                .exchange()
+                .expectStatus().isNoContent();
+
+        Mockito.verify(commentDataInputPort, times(1)).delete(postDataId);
+    }
+
+
 
 
 

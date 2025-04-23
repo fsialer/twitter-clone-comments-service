@@ -65,4 +65,36 @@ public class CommentDataPersistenceAdapterTest {
 
         verify(commentDataRepository, times(1)).existsByCommentIdAndUserId(anyString(), anyString());
     }
+
+    @Test
+    @DisplayName("When Identifier of the comment is correct Expect Return CommentData saved correctly")
+    void When_IdentifierOfTheCommentIsCorrect_Expect_ReturnCommentDataSavedCorrectly() {
+        String commentId = "commentId123";
+        CommentDataDocument commentDataDocument = TestUtilCommentData.buildCommentDataDocumentMock();
+        CommentData commentData = TestUtilCommentData.buildCommentDataMock();
+
+        when(commentDataRepository.findById(anyString())).thenReturn(Mono.just(commentDataDocument));
+        when(commentDataPersistenceMapper.toCommentData(any(Mono.class))).thenReturn(Mono.just(commentData));
+
+        Mono<CommentData> result = commentDataPersistenceAdapter.findById(commentId);
+
+        StepVerifier.create(result)
+                .expectNext(commentData)
+                .verifyComplete();
+
+        verify(commentDataRepository, times(1)).findById(anyString());
+        verify(commentDataPersistenceMapper, times(1)).toCommentData(any(Mono.class));
+    }
+
+    @Test
+    @DisplayName("when Delete By Id Expect Complete Successfully")
+    void when_DeleteById_Expect_CompleteSuccessfully() {
+        String commentId = "commentId123";
+        when(commentDataRepository.deleteById(commentId)).thenReturn(Mono.empty());
+        Mono<Void> result = commentDataPersistenceAdapter.delete(commentId);
+        StepVerifier.create(result)
+                .verifyComplete();
+
+        verify(commentDataRepository, times(1)).deleteById(commentId);
+    }
 }

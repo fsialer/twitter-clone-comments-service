@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.comments.app.application.ports.input.CommentDataInputPort;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
-import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
-import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
-import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
-import com.fernando.ms.comments.app.domain.exception.UserNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.*;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentDataRestMapper;
@@ -190,6 +187,25 @@ public class GlobalControllerAdviceTest {
         Mockito.verify(commentDataRestMapper, times(1))
                 .toCommentData(any(String.class), any(CreateCommentDataRequest.class));
         Mockito.verify(commentDataInputPort, times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("Expect CommentDataNotFoundException When PostData Identifier Is Invalid")
+    void Expect_PostDataNotFoundException_When_PostDataIdentifierIsInvalid() {
+        String commentDataId = "commentDataId123";
+        when(commentDataInputPort.delete(anyString())).thenReturn(Mono.error(CommentDataNotFoundException::new));
+        webTestClient.delete()
+                .uri("/v1/comments/data/{id}", commentDataId)
+                .header("X-User-Id", "1")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorResponse.class)
+                .value(response -> {
+                    assert response.getCode().equals(COMMENT_DATA_NOT_FOUND.getCode());
+                    assert response.getMessage().equals(COMMENT_DATA_NOT_FOUND.getMessage());
+                });
+
+        Mockito.verify(commentDataInputPort, times(1)).delete(commentDataId);
     }
 
 
