@@ -12,3 +12,8 @@ spring:
       password: ${DB_PASSWORD:1234}
 posts-service:
   url: ${POST_URL:http://localhost:8081/v1/posts}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, info

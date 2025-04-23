@@ -19,6 +19,7 @@ POST_URL=http://localhost:8082/v1/comments
 ## Tabla de recursos
 | NOMBRE                                         | RUTA                       | PETICION | PARAMETROS  | CUERPO                                                                                                                                       | 
 |------------------------------------------------|----------------------------|----------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Actuator             | /actuator       | GET      | NINGUNO     | NINGUNO                                                                                                                                      |
 | Listar comentarios general                     | /v1/comments               | GET      | NINGUNO     | NINGUNO                                                                                                                                      |
 | Obtener comentario por id                      | /v1/comments/{id}          | GET      | NINGUNO     | NINGUNO                                                                                                                                      |
 | Crear comentario por usuario                   | /v1/comments               | POST     | NINGUNO     | {<br/>"content":"Nuevo Post"<br/>"postId":"678318b2c8dda45d9a6c300d"br/>} |
@@ -36,3 +37,4 @@ POST_URL=http://localhost:8082/v1/comments
 * MAPSTRUCT
 * MOCKITO
 * JUNIT
+* ACTUATOR
