@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
 
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.FUNCTIONAL;
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.SYSTEM;

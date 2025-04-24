@@ -29,3 +29,16 @@ resilience4j:
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 2
         automaticTransitionFromOpenToHalfOpenEnabled: true
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    url: /v3/api-docs
+  openapi:
+    info:
+      title: Twitter Clone Comments Service API
+      version: 1.0.0
+      description: API documentation for the Twitter Clone Comments Service
