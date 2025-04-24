@@ -8,7 +8,6 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import reactor.core.publisher.Flux;
 
 @Mapper(componentModel = "spring")
@@ -25,7 +24,7 @@ public interface CommentRestMapper {
 
     CommentResponse toCommentResponse(Comment comment);
 
-    Comment toComment(Long userId,CreateCommentRequest rq);
+    Comment toComment(String userId,CreateCommentRequest rq);
 
     Comment toComment(UpdateCommentRequest rq);
 

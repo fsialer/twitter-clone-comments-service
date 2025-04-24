@@ -1,3 +1,6 @@
+## [v1.0.1] - 2025-04-24
+### 🐛 Bugs
+* fix bug in save comment about header X-User-Id
 ## [v1.0.0] - 2025-04-24
 ### 🚀 Features
 * new feature add prometheus to comment services

@@ -30,6 +30,7 @@ public class CommentService implements CommentInputPort {
 
     @Override
     public Mono<Comment> save(Comment comment) {
+
         return externalPostOutputPort.verify(comment.getPostId())
                 .filter(Boolean.TRUE::equals)
                 .switchIfEmpty(Mono.error(new PostNotFoundException()))
