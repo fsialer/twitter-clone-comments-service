@@ -1,0 +1,65 @@
+package com.fernando.ms.comments.app.application.services;
+
+import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
+import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
+import com.fernando.ms.comments.app.application.ports.output.ExternalPostOutputPort;
+import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
+import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
+import com.fernando.ms.comments.app.domain.models.Comment;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@Service
+@RequiredArgsConstructor
+public class CommentService implements CommentInputPort {
+    private final CommentPersistencePort commentPersistencePort;
+    private final ExternalPostOutputPort externalPostOutputPort;
+
+    @Override
+    public Flux<Comment> findAll() {
+        return commentPersistencePort.findAll();
+    }
+
+    @Override
+    public Mono<Comment> findById(String id) {
+        return commentPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new));
+    }
+
+    @Override
+    public Mono<Comment> save(Comment comment) {
+        return externalPostOutputPort.verify(comment.getPostId())
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.error(new PostNotFoundException()))
+                .flatMap(postExists->commentPersistencePort.save(comment));
+    }
+
+    @Override
+    public Mono<Comment> update(String id, Comment comment) {
+        return commentPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new))
+                .flatMap(commentUpdated->{
+                    commentUpdated.setContent(comment.getContent());
+                    return commentPersistencePort.save(commentUpdated);
+                });
+    }
+
+    @Override
+    public Mono<Void> delete(String id) {
+        return commentPersistencePort.findById(id)
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new))
+                .flatMap(commentDeleted -> commentPersistencePort.delete(id));
+    }
+
+    @Override
+    public Flux<Comment> findAllByPostId(String postId) {
+        return commentPersistencePort.findAllByPostId(postId);
+    }
+
+    @Override
+    public Mono<Boolean> verifyById(String id) {
+        return commentPersistencePort.verifyById(id);
+    }
+}

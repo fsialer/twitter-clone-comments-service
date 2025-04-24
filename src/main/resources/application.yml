@@ -1,0 +1,54 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: twitter-clone-comments-service
+  jackson:
+    default-property-inclusion: NON_NULL
+  data:
+    mongodb:
+      uri: ${DB_HOST:mongodb://localhost:27017/tc_comments_db}
+      username: ${DB_USERNAME:root}
+      password: ${DB_PASSWORD:1234}
+services:
+  url:
+    posts-service: ${POST_URL:http://localhost:8081/v1/posts}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, info, circuitbreakers, prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    enable:
+      jvm: true
+      logback: false
+    export:
+      prometheus:
+        enabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      postsServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    url: /v3/api-docs
+  openapi:
+    info:
+      title: Twitter Clone Comments Service API
+      version: 1.0.0
+      description: API documentation for the Twitter Clone Comments Service
