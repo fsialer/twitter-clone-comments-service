@@ -43,3 +43,5 @@ POST_URL=http://localhost:8082/v1/comments
 * JUNIT
 * ACTUATOR
 * RESILIENCE4J
+* SWAGGER
+* PROMETHEUS
