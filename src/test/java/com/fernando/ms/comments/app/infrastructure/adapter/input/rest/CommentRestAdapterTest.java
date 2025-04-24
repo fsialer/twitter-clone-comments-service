@@ -98,7 +98,7 @@ public class CommentRestAdapterTest {
         Comment comment = TestUtilsComment.buildCommentMock();
         CommentResponse commentResponse = TestUtilsComment.buildCommentResponseMock();
 
-        when(commentRestMapper.toComment(anyLong(),any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toComment(anyString(),any(CreateCommentRequest.class))).thenReturn(comment);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.just(comment));
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
 
@@ -112,7 +112,7 @@ public class CommentRestAdapterTest {
                 .expectBody()
                 .jsonPath("$.content").isEqualTo("comment");
 
-        Mockito.verify(commentRestMapper, times(1)).toComment(anyLong(),any(CreateCommentRequest.class));
+        Mockito.verify(commentRestMapper, times(1)).toComment(anyString(),any(CreateCommentRequest.class));
         Mockito.verify(commentInputPort, times(1)).save(any(Comment.class));
         Mockito.verify(commentRestMapper, times(1)).toCommentResponse(any(Comment.class));
     }

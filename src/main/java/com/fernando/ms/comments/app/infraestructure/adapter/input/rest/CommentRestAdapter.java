@@ -53,7 +53,7 @@ public class CommentRestAdapter {
     @PostMapping
     @Operation(summary = "Save comment by user")
     @ApiResponse(responseCode = "201", description = "Saved comment by user")
-    public Mono<ResponseEntity<CommentResponse>> save(@RequestHeader("X-User-Id") Long userId,
+    public Mono<ResponseEntity<CommentResponse>> save(@RequestHeader("X-User-Id") String userId,
                                                       @Valid @RequestBody CreateCommentRequest rq){
         return commentInputPort.save(commentRestMapper.toComment(userId,rq))
                 .flatMap(comment -> {

@@ -109,7 +109,7 @@ public class GlobalControllerAdviceTest {
         CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
         Comment comment=TestUtilsComment.buildCommentMock();
         CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
-        when(commentRestMapper.toComment(anyLong(),any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toComment(anyString(),any(CreateCommentRequest.class))).thenReturn(comment);
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new UserNotFoundException()));
 
@@ -133,7 +133,7 @@ public class GlobalControllerAdviceTest {
         CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
         Comment comment=TestUtilsComment.buildCommentMock();
         CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
-        when(commentRestMapper.toComment(anyLong(),any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toComment(anyString(),any(CreateCommentRequest.class))).thenReturn(comment);
         when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
         when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new PostNotFoundException()));
         webTestClient.post()
