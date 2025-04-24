@@ -46,8 +46,9 @@ dependencies {
 	implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.6.2'
 	implementation group: 'org.projectlombok', name: 'lombok-mapstruct-binding', version: '0.2.0'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation("io.github.resilience4j:resilience4j-spring-boot3:2.3.0")
-	implementation("io.github.resilience4j:resilience4j-reactor:2.3.0")
+	implementation "io.github.resilience4j:resilience4j-spring-boot3:2.3.0"
+	implementation "io.github.resilience4j:resilience4j-reactor:2.3.0"
+	implementation "io.micrometer:micrometer-registry-prometheus"
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.6'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
