@@ -9,15 +9,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.FUNCTIONAL;
 import static com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.enums.ErrorType.SYSTEM;
 import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -92,6 +95,19 @@ public class GlobalControllerAdvice {
                         .toList())
                 .timestamp(LocalDate.now().toString())
                 .build());
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(FallBackException.class)
+    public Mono<ErrorResponse> handleFallBackException(FallBackException e){
+        return Mono.just(
+                ErrorResponse.builder()
+                        .code(COMMENT_SERVICES_FAIL.getCode())
+                        .type(FUNCTIONAL)
+                        .message(COMMENT_SERVICES_FAIL.getMessage())
+                        .timestamp(LocalDate.now().toString())
+                        .build()
+        );
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

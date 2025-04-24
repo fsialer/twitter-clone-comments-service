@@ -10,6 +10,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

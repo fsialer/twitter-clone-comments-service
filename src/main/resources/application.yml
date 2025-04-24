@@ -10,10 +10,22 @@ spring:
       uri: ${DB_HOST:mongodb://localhost:27017/tc_comments_db}
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:1234}
-posts-service:
-  url: ${POST_URL:http://localhost:8081/v1/posts}
+services:
+  url:
+    posts-service: ${POST_URL:http://localhost:8081/v1/posts}
 management:
   endpoints:
     web:
       exposure:
-        include: health, metrics, info
+        include: health, metrics, info, circuitbreakers
+resilience4j:
+  circuitbreaker:
+    instances:
+      postsServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true

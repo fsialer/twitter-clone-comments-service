@@ -11,11 +11,11 @@ import reactor.core.publisher.Mono;
 public class PostRestClientAdapter implements ExternalPostOutputPort {
 
     private final PostWebClient postWebClient;
+
     @Override
+
     public Mono<Boolean> verify(String id) {
         return postWebClient.verify(id)
-                .flatMap(existsPostResponse -> {
-                    return Mono.just(existsPostResponse.getExists());
-                });
+                .flatMap(existsPostResponse -> Mono.just(existsPostResponse.getExists()));
     }
 }
