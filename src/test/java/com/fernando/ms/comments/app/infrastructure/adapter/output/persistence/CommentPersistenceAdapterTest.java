@@ -2,7 +2,7 @@ package com.fernando.ms.comments.app.infrastructure.adapter.output.persistence;
 
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.CommentPersistenceAdapter;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models.CommentDocument;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper.CommentPersistenceMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.repository.CommentRepository;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentPersistenceAdapterTest {
+class CommentPersistenceAdapterTest {
     @Mock
     private CommentRepository commentRepository;
 

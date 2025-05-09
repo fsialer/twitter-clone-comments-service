@@ -1,13 +1,12 @@
 package com.fernando.ms.comments.app.utils;
 
 import com.fernando.ms.comments.app.domain.models.Comment;
-import com.fernando.ms.comments.app.domain.models.Post;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.Models.CommentDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models.CommentDocument;
 
 import java.time.LocalDateTime;
 

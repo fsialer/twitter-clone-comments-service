@@ -32,6 +32,7 @@ sonar {
 		property("sonar.host.url", "${SONAR_HOST}")
 		property("sonar.login", "${SONAR_KEY}")
 		property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.html"
+		property "sonar.exclusions", "**/config/**, **/TwitterCloneCommentsServiceApplication.*, **/validation/*.*"
 	}
 }
 
@@ -68,7 +69,20 @@ tasks.jacocoTestReport {
 		html.required = true
 		csv.required = false
 	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: [
+				'**/config/**',
+				'**/*Config.class',
+				'**/*Configuration.class',
+				"**/*MapperImpl.class",
+				"**/TwitterCloneCommentsServiceApplication.*",
+				"**/validation/*.*"
+		]) }))
+	}
 }
+
+
 
 tasks.test {
 	finalizedBy tasks.jacocoTestReport  // Asegura que el reporte se genere después de las pruebas

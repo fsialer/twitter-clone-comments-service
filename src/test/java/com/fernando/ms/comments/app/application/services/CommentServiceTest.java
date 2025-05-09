@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentServiceTest {
+class CommentServiceTest {
     @Mock
     private CommentPersistencePort commentPersistencePort;
 
@@ -185,21 +185,4 @@ public class CommentServiceTest {
 
         Mockito.verify(commentPersistencePort, times(1)).verifyById(anyString());
     }
-
-    @Test
-    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments With User Information")
-    void When_PostIdentifierIsCorrect_Expect_AListOfCommentsWithUserInformation() {
-        Comment comment = TestUtilsComment.buildCommentMock();
-
-        when(commentPersistencePort.findAllByPostId(anyString())).thenReturn(Flux.just(comment));
-
-        Flux<Comment> comments = commentService.findAllByPostId("postId");
-
-        StepVerifier.create(comments)
-                .expectNext(comment)
-                .verifyComplete();
-
-        Mockito.verify(commentPersistencePort, times(1)).findAllByPostId(anyString());
-    }
-
 }

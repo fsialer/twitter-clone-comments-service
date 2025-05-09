@@ -45,9 +45,7 @@ public class CommentRestAdapter {
     @ApiResponse(responseCode = "200", description = "Found comment by id")
     public Mono<ResponseEntity<CommentResponse>> findById(@PathVariable("id") String id){
         return commentInputPort.findById(id)
-                .flatMap(comment -> {
-                    return Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment)));
-                });
+                .flatMap(comment ->Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment))));
     }
 
     @PostMapping
@@ -67,9 +65,7 @@ public class CommentRestAdapter {
     @ApiResponse(responseCode = "200", description = "Updated comment by id")
     public Mono<ResponseEntity<CommentResponse>> update(@PathVariable("id") String id,@Valid @RequestBody UpdateCommentRequest rq){
         return commentInputPort.update(id,commentRestMapper.toComment(rq))
-                .flatMap(comment->{
-                    return Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment)));
-                });
+                .flatMap(comment->Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment))));
     }
 
     @DeleteMapping("/{id}")
@@ -92,9 +88,7 @@ public class CommentRestAdapter {
     @ApiResponse(responseCode ="200", description = "Exists comment by id")
     public Mono<ResponseEntity<ExistsCommentResponse>> verify(@PathVariable("id") String id){
         return commentInputPort.verifyById(id)
-                .flatMap(exists->{
-                    return Mono.just(ResponseEntity.ok().body(commentRestMapper.toExistsCommentResponse(exists)));
-                });
+                .flatMap(exists-> Mono.just(ResponseEntity.ok().body(commentRestMapper.toExistsCommentResponse(exists))));
     }
 
     @PostMapping("/data")

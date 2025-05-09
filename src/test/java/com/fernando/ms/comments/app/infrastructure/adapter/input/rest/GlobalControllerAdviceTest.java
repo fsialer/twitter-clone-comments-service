@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(controllers = {CommentRestAdapter.class})
-public class GlobalControllerAdviceTest {
+class GlobalControllerAdviceTest {
     @MockitoBean
     private CommentRestMapper commentRestMapper;
 
@@ -206,6 +206,29 @@ public class GlobalControllerAdviceTest {
                 });
 
         Mockito.verify(commentDataInputPort, times(1)).delete(commentDataId);
+    }
+
+    @Test
+    @DisplayName("Expect FallBackException When Comment Post Identifier Not Exists")
+    void Expect_FallBackException_When_PostIdentifierNotExists() throws JsonProcessingException {
+        CreateCommentRequest createCommentRequest= TestUtilsComment.buildCreateCommentRequestMock();
+        Comment comment=TestUtilsComment.buildCommentMock();
+        CommentResponse commentResponse=TestUtilsComment.buildCommentResponseMock();
+        when(commentRestMapper.toComment(anyString(),any(CreateCommentRequest.class))).thenReturn(comment);
+        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+        when(commentInputPort.save(any(Comment.class))).thenReturn(Mono.error(new FallBackException()));
+        webTestClient.post()
+                .uri("/v1/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-User-Id", "1")
+                .bodyValue(objectMapper.writeValueAsString(createCommentRequest))
+                .exchange()
+                .expectStatus().is5xxServerError()
+                .expectBody(ErrorResponse.class)
+                .value(response -> {
+                    assert response.getCode().equals(COMMENT_SERVICES_FAIL.getCode());
+                    assert response.getMessage().equals(COMMENT_SERVICES_FAIL.getMessage());
+                });
     }
 
 
