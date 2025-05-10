@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.comments.app.application.ports.input.CommentDataInputPort;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
-import com.fernando.ms.comments.app.domain.exception.CommentRuleException;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.CommentRestAdapter;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentDataRestMapper;
@@ -14,7 +13,6 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ErrorResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
@@ -35,7 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(CommentRestAdapter.class)
-public class CommentRestAdapterTest {
+class CommentRestAdapterTest {
     @Autowired
     private WebTestClient webTestClient;
 

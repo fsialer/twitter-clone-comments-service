@@ -17,8 +17,10 @@ public class PostWebClientImpl implements PostWebClient {
     private final WebClient webClient;
     private final CircuitBreaker circuitBreaker;
 
-    public PostWebClientImpl(CircuitBreakerRegistry circuitBreakerRegistry,ServiceProperties serviceProperties){
-        this.webClient = WebClient.builder().baseUrl(serviceProperties.getPostsService()).build();
+    public PostWebClientImpl(CircuitBreakerRegistry circuitBreakerRegistry,
+                             WebClient.Builder webClientBuilder,
+                             ServiceProperties serviceProperties){
+        this.webClient =webClientBuilder.baseUrl(serviceProperties.getPostsService()).build();
         this.circuitBreaker = circuitBreakerRegistry.circuitBreaker("postsServiceCB");
     }
 

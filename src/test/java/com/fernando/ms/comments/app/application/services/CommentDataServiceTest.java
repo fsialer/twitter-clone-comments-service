@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentDataServiceTest {
+class CommentDataServiceTest {
     @Mock
     private CommentDataPersistencePort commentDataPersistencePort;
 
