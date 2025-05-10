@@ -2,7 +2,7 @@ package com.fernando.ms.comments.app.infrastructure.adapter.output.persistence.m
 
 import com.fernando.ms.comments.app.domain.models.CommentData;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper.CommentDataPersistenceMapper;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models.CommentDataDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDataDocument;
 import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

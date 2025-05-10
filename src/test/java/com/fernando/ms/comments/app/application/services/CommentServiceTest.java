@@ -84,6 +84,41 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("When Comment And Parent Are Saved Successfully Expect Comment Information Correct")
+    void When_CommentAndParentAreSavedSuccessfully_Expect_CommentInformationCorrect() {
+        Comment comment = TestUtilsComment.buildCommentParentMock();
+        Comment commentAnswer = TestUtilsComment.buildCommentAnswerMock();
+        when(commentPersistencePort.save(any(Comment.class))).thenReturn(Mono.just(comment));
+        when(externalPostOutputPort.verify(anyString())).thenReturn(Mono.just(true));
+        when(commentPersistencePort.findById(anyString())).thenReturn(Mono.just(commentAnswer));
+        Mono<Comment> savedComment = commentService.save(comment);
+
+        StepVerifier.create(savedComment)
+                .expectNext(comment)
+                .verifyComplete();
+        Mockito.verify(commentPersistencePort, times(2)).save(any(Comment.class));
+        Mockito.verify(externalPostOutputPort, times(1)).verify(anyString());
+        Mockito.verify(commentPersistencePort, times(1)).findById(anyString());
+    }
+
+    @Test
+    @DisplayName("Expect CommentNotFound When Parent don't exists")
+    void Expect_CommentNotFound_When_ParentDontExists() {
+        Comment comment = TestUtilsComment.buildCommentParentMock();
+        when(commentPersistencePort.save(any(Comment.class))).thenReturn(Mono.just(comment));
+        when(externalPostOutputPort.verify(anyString())).thenReturn(Mono.just(true));
+        when(commentPersistencePort.findById(anyString())).thenReturn(Mono.empty());
+        Mono<Comment> savedComment = commentService.save(comment);
+
+        StepVerifier.create(savedComment)
+                .expectError(CommentNotFoundException.class)
+                .verify();
+        Mockito.verify(commentPersistencePort, times(1)).save(any(Comment.class));
+        Mockito.verify(externalPostOutputPort, times(1)).verify(anyString());
+        Mockito.verify(commentPersistencePort, times(1)).findById(anyString());
+    }
+
+    @Test
     @DisplayName("When Comment Is Update Except Comment Information Save Correctly")
     void When_CommentIsUpdateExcept_CommentInformationSaveCorrectly(){
         Comment comment = TestUtilsComment.buildCommentMock();
