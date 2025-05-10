@@ -9,7 +9,6 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDocument;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 
 public class TestUtilsComment {
     public static Comment buildCommentAnswerMock(){
