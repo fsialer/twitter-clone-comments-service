@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -25,11 +24,4 @@ public class CommentDocument {
     private String postId;
     private String parentComment;
     private Set<String> answers;
-
-//    public Set<String> getAnswers(){
-//        if(answers==null){
-//            answers=new HashSet<>();
-//        }
-//        return answers;
-//    }
 }
