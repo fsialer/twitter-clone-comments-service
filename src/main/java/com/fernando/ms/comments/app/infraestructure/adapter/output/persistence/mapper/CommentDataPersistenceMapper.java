@@ -1,7 +1,7 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.mapper;
 
 import com.fernando.ms.comments.app.domain.models.CommentData;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models.CommentDataDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDataDocument;
 import org.mapstruct.Mapper;
 import reactor.core.publisher.Mono;
 

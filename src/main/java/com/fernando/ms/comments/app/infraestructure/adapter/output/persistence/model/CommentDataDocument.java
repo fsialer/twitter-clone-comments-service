@@ -1,4 +1,4 @@
-package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models;
+package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

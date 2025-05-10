@@ -2,7 +2,7 @@ package com.fernando.ms.comments.app.utils;
 
 import com.fernando.ms.comments.app.domain.models.CommentData;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models.CommentDataDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDataDocument;
 
 public class TestUtilCommentData {
     public static CommentData buildCommentDataMock(){

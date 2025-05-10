@@ -6,11 +6,34 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.models.CommentDocument;
+import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDocument;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 public class TestUtilsComment {
+    public static Comment buildCommentAnswerMock(){
+        return Comment.builder()
+                .id("2")
+                .content("comment")
+                .dateComment(LocalDateTime.now())
+                .postId("47fdfhhgds96574d")
+                .userId("4uuydnsd4478954")
+                .answers(null)
+                .build();
+    }
+
+    public static Comment buildCommentParentMock(){
+        return Comment.builder()
+                .id("2")
+                .content("comment")
+                .dateComment(LocalDateTime.now())
+                .postId("47fdfhhgds96574d")
+                .userId("4uuydnsd4478954")
+                .parentComment("ds4557454dsd")
+                .build();
+    }
+
     public static Comment buildCommentMock(){
         return Comment.builder()
                 .id("1")
@@ -45,6 +68,7 @@ public class TestUtilsComment {
         return CreateCommentRequest.builder()
                 .content("comment")
                 .postId("1")
+                .parentComment("3")
                 .build();
     }
 
