@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,8 +80,10 @@ public class CommentRestAdapter {
     @GetMapping("/{idPost}/post")
     @Operation(summary = "find all comment by post")
     @ApiResponse(responseCode = "200", description = "find all comment by post")
-    public Flux<CommentUserResponse> findAllByPostId(@PathVariable("idPost") String postId){
-        return commentRestMapper.toCommentsUserResponse(commentInputPort.findAllByPostId(postId));
+    public Flux<CommentUserResponse> findAllByPostId(@PathVariable("idPost") String postId,
+                                                     @RequestParam("page") @DefaultValue("0") int page,
+                                                     @RequestParam("size") @DefaultValue("20")  int size){
+        return commentRestMapper.toCommentsAuthorResponse(commentInputPort.findAllByPostId(postId,page,size));
     }
 
     @GetMapping("/{id}/verify")

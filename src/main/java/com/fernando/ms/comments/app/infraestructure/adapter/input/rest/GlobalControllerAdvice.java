@@ -101,8 +101,21 @@ public class GlobalControllerAdvice {
         return Mono.just(
                 ErrorResponse.builder()
                         .code(COMMENT_SERVICES_FAIL.getCode())
-                        .type(FUNCTIONAL)
+                        .type(SYSTEM)
                         .message(COMMENT_SERVICES_FAIL.getMessage())
+                        .timestamp(LocalDate.now().toString())
+                        .build()
+        );
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(UserFallBackException.class)
+    public Mono<ErrorResponse> handleUserFallBackException(UserFallBackException e){
+        return Mono.just(
+                ErrorResponse.builder()
+                        .code(USERS_SERVICES_FAIL.getCode())
+                        .type(SYSTEM)
+                        .message(USERS_SERVICES_FAIL.getMessage())
                         .timestamp(LocalDate.now().toString())
                         .build()
         );

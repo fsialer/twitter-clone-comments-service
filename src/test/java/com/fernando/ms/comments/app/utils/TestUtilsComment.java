@@ -1,5 +1,6 @@
 package com.fernando.ms.comments.app.utils;
 
+import com.fernando.ms.comments.app.domain.models.Author;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
@@ -9,6 +10,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDocument;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class TestUtilsComment {
     public static Comment buildCommentAnswerMock(){
@@ -18,7 +20,7 @@ public class TestUtilsComment {
                 .dateComment(LocalDateTime.now())
                 .postId("47fdfhhgds96574d")
                 .userId("4uuydnsd4478954")
-                .answers(null)
+                .answers(Set.of("dsd6262d62s6d2s6d"))
                 .build();
     }
 
@@ -40,6 +42,11 @@ public class TestUtilsComment {
                 .dateComment(LocalDateTime.now())
                 .postId("47fdfhhgds96574d")
                 .userId("4uuydnsd4478954")
+                .author(Author.builder()
+                        .id("ds545d4sds")
+                        .names("john")
+                        .lastNames("doe")
+                        .build())
                 .build();
     }
 
@@ -52,6 +59,7 @@ public class TestUtilsComment {
                 .userId("4uuydnsd4478954")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                //.answers(Set.of(""))
                 .build();
     }
 
@@ -88,7 +96,7 @@ public class TestUtilsComment {
                 .id("678daea99359a311d3e0035a")
                 .content("comment")
                 .dateComment(LocalDateTime.now())
-                .userId("4uuydnsd4478954")
+                .author("john doe")
                 .build();
     }
 }

@@ -99,16 +99,16 @@ class CommentPersistenceAdapterTest {
         Comment comment = TestUtilsComment.buildCommentMock();
         CommentDocument commentDocument = TestUtilsComment.buildCommentDocumentMock();
 
-        when(commentRepository.findAllByPostId(anyString())).thenReturn(Flux.just(commentDocument));
+        when(commentRepository.findAllByPostId(anyString(),anyInt(),anyInt())).thenReturn(Flux.just(commentDocument));
         when(commentPersistenceMapper.toComments(any(Flux.class))).thenReturn(Flux.just(comment));
 
-        Flux<Comment> comments = commentPersistenceAdapter.findAllByPostId("postId");
+        Flux<Comment> comments = commentPersistenceAdapter.findAllByPostId("postId",1,20);
 
         StepVerifier.create(comments)
                 .expectNext(comment)
                 .verifyComplete();
 
-        Mockito.verify(commentRepository, times(1)).findAllByPostId(anyString());
+        Mockito.verify(commentRepository, times(1)).findAllByPostId(anyString(),anyInt(),anyInt());
         Mockito.verify(commentPersistenceMapper, times(1)).toComments(any(Flux.class));
     }
 

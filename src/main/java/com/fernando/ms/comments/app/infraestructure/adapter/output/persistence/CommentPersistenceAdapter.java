@@ -36,8 +36,8 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
     }
 
     @Override
-    public Flux<Comment> findAllByPostId(String postId) {
-        return commentPersistenceMapper.toComments(commentRepository.findAllByPostId(postId));
+    public Flux<Comment> findAllByPostId(String postId,int page,int size) {
+        return commentPersistenceMapper.toComments(commentRepository.findAllByPostId(postId,page,size));
     }
 
     @Override
