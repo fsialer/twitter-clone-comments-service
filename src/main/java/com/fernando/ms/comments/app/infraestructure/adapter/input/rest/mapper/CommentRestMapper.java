@@ -15,11 +15,18 @@ public interface CommentRestMapper {
         return comments.map(this::toCommentResponse);
     }
 
-    default Flux<CommentUserResponse> toCommentsUserResponse(Flux<Comment> comments){
-        return comments.map(this::toCommentUserResponse);
+    default Flux<CommentUserResponse> toCommentsAuthorResponse(Flux<Comment> comments){
+        return comments.map(this::toCommentAuthorResponse);
     }
 
-    CommentUserResponse toCommentUserResponse(Comment comment);
+    default CommentUserResponse toCommentAuthorResponse(Comment comment){
+        return CommentUserResponse.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .dateComment(comment.getDateComment())
+                .author(comment.getAuthor().getNames().concat(" ").concat(comment.getAuthor().getLastNames()==null?"":comment.getAuthor().getLastNames()).trim())
+                .build();
+    }
 
     CommentResponse toCommentResponse(Comment comment);
 

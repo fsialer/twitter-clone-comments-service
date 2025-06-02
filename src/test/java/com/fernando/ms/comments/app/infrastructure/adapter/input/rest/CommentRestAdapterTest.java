@@ -156,20 +156,25 @@ class CommentRestAdapterTest {
         CommentUserResponse commentUserResponse = TestUtilsComment.buildCommentUserResponseMock();
 
         // Configuración de mocks
-        when(commentInputPort.findAllByPostId(anyString())).thenReturn(Flux.just(comment));
-        when(commentRestMapper.toCommentsUserResponse(any(Flux.class))).thenReturn(Flux.just(commentUserResponse));
+        when(commentInputPort.findAllByPostId(anyString(),anyInt(),anyInt())).thenReturn(Flux.just(comment));
+        when(commentRestMapper.toCommentsAuthorResponse(any(Flux.class))).thenReturn(Flux.just(commentUserResponse));
 
         // Ejecución y validación
         webTestClient.get()
-                .uri("/v1/comments/{idPost}/post", "1")
+                .uri( uriBuilder ->
+                    uriBuilder.path("/v1/comments/{idPost}/post")
+                            .queryParam("page",1)
+                            .queryParam("size",20)
+                            .build("1")
+                )
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$[0].content").isEqualTo(commentUserResponse.getContent());
 
         // Verificación de interacciones
-        Mockito.verify(commentInputPort, times(1)).findAllByPostId(anyString());
-        Mockito.verify(commentRestMapper, times(1)).toCommentsUserResponse(any(Flux.class));
+        Mockito.verify(commentInputPort, times(1)).findAllByPostId(anyString(),anyInt(),anyInt());
+        Mockito.verify(commentRestMapper, times(1)).toCommentsAuthorResponse(any(Flux.class));
     }
 
     @Test
@@ -189,26 +194,6 @@ class CommentRestAdapterTest {
 
         Mockito.verify(commentInputPort, times(1)).verifyById(anyString());
         Mockito.verify(commentRestMapper, times(1)).toExistsCommentResponse(anyBoolean());
-    }
-
-    @Test
-    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments With User Information")
-    void When_PostIdentifierIsCorrect_Expect_AListOfCommentsWithUserInformation() {
-        CommentUserResponse commentUserResponse = TestUtilsComment.buildCommentUserResponseMock();
-        Comment comment = TestUtilsComment.buildCommentMock();
-
-        when(commentInputPort.findAllByPostId(anyString())).thenReturn(Flux.just(comment));
-        when(commentRestMapper.toCommentsUserResponse(any(Flux.class))).thenReturn(Flux.just(commentUserResponse));
-
-        webTestClient.get()
-                .uri("/v1/comments/{idPost}/post", "1")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$").isNotEmpty();
-
-        Mockito.verify(commentInputPort, times(1)).findAllByPostId(anyString());
-        Mockito.verify(commentRestMapper, times(1)).toCommentsUserResponse(any(Flux.class));
     }
 
     @Test

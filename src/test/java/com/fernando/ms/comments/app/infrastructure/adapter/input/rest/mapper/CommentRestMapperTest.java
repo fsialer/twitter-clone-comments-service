@@ -44,12 +44,12 @@ class CommentRestMapperTest {
     @DisplayName("When Mapping FluxComment Expect FluxUserCommentResponse")
     void When_MappingFluxComment_Expect_FluxUserCommentResponse(){
         Comment comment= TestUtilsComment.buildCommentMock();
-        Flux<CommentUserResponse> fluxCommentUserResponse=commentRestMapper.toCommentsUserResponse(Flux.just(comment));
+        Flux<CommentUserResponse> fluxCommentUserResponse=commentRestMapper.toCommentsAuthorResponse(Flux.just(comment));
         StepVerifier.create(fluxCommentUserResponse)
                 .consumeNextWith(commentResponse -> {
                     assertEquals(commentResponse.getId(),comment.getId());
                     assertEquals(commentResponse.getContent(),comment.getContent());
-                    assertEquals(commentResponse.getUserId(),comment.getUserId());
+                    assertEquals(commentResponse.getAuthor(),comment.getAuthor().getNames().concat(" ").concat(comment.getAuthor().getLastNames()));
                 })
                 .verifyComplete();
     }
@@ -58,10 +58,21 @@ class CommentRestMapperTest {
     @DisplayName("When Mapping Comment Expect CommentUserResponse")
     void When_MappingComment_Expect_CommentUserResponse(){
         Comment comment= TestUtilsComment.buildCommentMock();
-        CommentUserResponse commentUserResponse=commentRestMapper.toCommentUserResponse(comment);
+        CommentUserResponse commentUserResponse=commentRestMapper.toCommentAuthorResponse(comment);
         assertEquals(commentUserResponse.getId(),comment.getId());
         assertEquals(commentUserResponse.getContent(),comment.getContent());
-        assertEquals(commentUserResponse.getUserId(),comment.getUserId());
+        assertEquals(commentUserResponse.getAuthor(),comment.getAuthor().getNames().concat(" ").concat(comment.getAuthor().getLastNames()==null?"":comment.getAuthor().getLastNames()).trim());
+    }
+
+    @Test
+    @DisplayName("When Mapping Comment WithOut LastNames Expect CommentUserResponse")
+    void When_MappingCommentWithOutLastNames_Expect_CommentUserResponse(){
+        Comment comment= TestUtilsComment.buildCommentMock();
+        comment.getAuthor().setLastNames(null);
+        CommentUserResponse commentUserResponse=commentRestMapper.toCommentAuthorResponse(comment);
+        assertEquals(commentUserResponse.getId(),comment.getId());
+        assertEquals(commentUserResponse.getContent(),comment.getContent());
+        assertEquals(commentUserResponse.getAuthor(),comment.getAuthor().getNames().concat(" ").concat(comment.getAuthor().getLastNames()==null?"":comment.getAuthor().getLastNames()).trim());
     }
 
     @Test

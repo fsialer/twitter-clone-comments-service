@@ -13,5 +13,7 @@ public class CreateCommentRequest {
     private String content;
     @NotBlank(message = "Field postId cannot be null or blank")
     private String postId;
+    @NotBlank(message = "Field dateComment cannot be null")
+    private String dateComment;
     private String parentComment;
 }

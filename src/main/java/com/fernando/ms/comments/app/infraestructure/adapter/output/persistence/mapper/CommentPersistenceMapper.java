@@ -21,14 +21,9 @@ public interface CommentPersistenceMapper {
 
     Comment toComment(CommentDocument comment);
 
-    @Mapping(target = "dateComment",expression = "java(mapDateComment())")
     @Mapping(target = "createdAt",expression = "java(mapCreatedAt())")
     @Mapping(target = "updatedAt",expression = "java(mapUpdatedAt())")
     CommentDocument toCommentDocument(Comment comment);
-
-    default LocalDateTime mapDateComment(){
-        return LocalDateTime.now();
-    }
 
     default LocalDateTime mapCreatedAt(){
         return LocalDateTime.now();

@@ -13,6 +13,7 @@ spring:
 services:
   url:
     posts-service: ${POST_URL:http://localhost:8081/v1/posts}
+    users-service: ${USER_URL:http://localhost:8080/v1/users}
 management:
   endpoints:
     web:

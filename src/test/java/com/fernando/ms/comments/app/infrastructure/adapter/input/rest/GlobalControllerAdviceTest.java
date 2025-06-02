@@ -23,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.fernando.ms.comments.app.infraestructure.utils.ErrorCatalog.*;
@@ -229,6 +230,33 @@ class GlobalControllerAdviceTest {
                     assert response.getCode().equals(COMMENT_SERVICES_FAIL.getCode());
                     assert response.getMessage().equals(COMMENT_SERVICES_FAIL.getMessage());
                 });
+    }
+
+    @Test
+    @DisplayName("Expect FallBackException When Service User Is Not Available")
+    void Expect_FallBackException_When_ServiceUserIsNotAvailable() {
+        String postId="1";
+        when(commentRestMapper.toCommentsAuthorResponse(any(Flux.class))).thenReturn(Flux.empty());
+        when(commentInputPort.findAllByPostId(anyString(), anyInt(), anyInt())).thenThrow(new UserFallBackException());
+
+        webTestClient.get()
+                .uri( uriBuilder -> uriBuilder
+                        .path("/v1/comments/{idPost}/post")
+                        .queryParam("page","1")
+                        .queryParam("size","25")
+                        .build(postId)
+                )
+                //.header("X-User-Id","1")
+                .exchange()
+                .expectStatus().is5xxServerError()
+                .expectBody(ErrorResponse.class)
+                .value(response -> {
+                    assert response.getCode().equals(USERS_SERVICES_FAIL.getCode());
+                    assert response.getMessage().equals(USERS_SERVICES_FAIL.getMessage());
+                });
+
+        Mockito.verify(commentInputPort, times(1)).findAllByPostId(anyString(),anyInt(),anyInt());
+        Mockito.verify(commentRestMapper, times(0)).toCommentsAuthorResponse(any(Flux.class));
     }
 
 

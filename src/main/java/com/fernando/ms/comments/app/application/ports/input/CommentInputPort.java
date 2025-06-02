@@ -15,7 +15,7 @@ public interface CommentInputPort {
 
     Mono<Void> delete(String id);
 
-    Flux<Comment> findAllByPostId(String postId);
+    Flux<Comment> findAllByPostId(String postId,int page,int size);
 
     Mono<Boolean> verifyById(String id);
 }

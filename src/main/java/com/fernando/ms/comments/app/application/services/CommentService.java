@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.application.services;
 import com.fernando.ms.comments.app.application.ports.input.CommentInputPort;
 import com.fernando.ms.comments.app.application.ports.output.CommentPersistencePort;
 import com.fernando.ms.comments.app.application.ports.output.ExternalPostOutputPort;
+import com.fernando.ms.comments.app.application.ports.output.ExternalUserOutputPort;
 import com.fernando.ms.comments.app.domain.exception.CommentNotFoundException;
 import com.fernando.ms.comments.app.domain.exception.PostNotFoundException;
 import com.fernando.ms.comments.app.domain.models.Comment;
@@ -11,13 +12,12 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashSet;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService implements CommentInputPort {
     private final CommentPersistencePort commentPersistencePort;
     private final ExternalPostOutputPort externalPostOutputPort;
+    private final ExternalUserOutputPort externalUserOutputPort;
 
     @Override
     public Flux<Comment> findAll() {
@@ -42,9 +42,6 @@ public class CommentService implements CommentInputPort {
                         return commentPersistencePort.findById(comment.getParentComment())
                                 .switchIfEmpty(Mono.error(CommentNotFoundException::new))
                                 .flatMap(commentParent->{
-                                    if(commentParent.getAnswers()==null){
-                                        commentParent.setAnswers(new HashSet<>());
-                                    }
                                     commentParent.getAnswers().add(commentSaved.getId());
                                     return commentPersistencePort.save(commentParent);
                                 });
@@ -71,8 +68,13 @@ public class CommentService implements CommentInputPort {
     }
 
     @Override
-    public Flux<Comment> findAllByPostId(String postId) {
-        return commentPersistencePort.findAllByPostId(postId);
+    public Flux<Comment> findAllByPostId(String postId, int page, int size) {
+        return commentPersistencePort.findAllByPostId(postId,page,size)
+                .flatMap(comment->
+                    externalUserOutputPort.findAuthorByUserId(comment.getUserId())
+                            .doOnNext(comment::setAuthor)
+                            .thenReturn(comment)
+                );
     }
 
     @Override

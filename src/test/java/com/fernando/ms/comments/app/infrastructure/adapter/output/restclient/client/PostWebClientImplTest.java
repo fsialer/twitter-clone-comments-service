@@ -72,7 +72,7 @@ class PostWebClientImplTest {
         Mockito.<WebClient.RequestHeadersUriSpec<?>>when(webClient.get()).thenReturn(requestHeadersUriSpec);
         Mockito.<WebClient.RequestHeadersSpec<?>>when(requestHeadersUriSpec.uri("/{id}/verify", postId)).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(ExistsPostResponse.class)).thenReturn(Mono.error(new RuntimeException("error")));
+        when(responseSpec.bodyToMono(ExistsPostResponse.class)).thenReturn(Mono.error(new FallBackException()));
         when(serviceProperties.getPostsService()).thenReturn("http://fake-url");
 
         circuitBreakerRegistry = CircuitBreakerRegistry.ofDefaults();

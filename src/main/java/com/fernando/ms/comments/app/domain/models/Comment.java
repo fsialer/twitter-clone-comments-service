@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.domain.models;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -17,5 +18,7 @@ public class Comment {
     private String userId;
     private String postId;
     private String parentComment;
-    private Set<String> answers;
+    @Builder.Default
+    private Set<String> answers=new HashSet<>();
+    private Author author;
 }
