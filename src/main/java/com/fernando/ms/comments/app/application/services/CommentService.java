@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashSet;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService implements CommentInputPort {
@@ -44,9 +42,6 @@ public class CommentService implements CommentInputPort {
                         return commentPersistencePort.findById(comment.getParentComment())
                                 .switchIfEmpty(Mono.error(CommentNotFoundException::new))
                                 .flatMap(commentParent->{
-                                    //if(commentParent.getAnswers()==null){
-                                       // commentParent.setAnswers(new HashSet<>());
-                                   // }
                                     commentParent.getAnswers().add(commentSaved.getId());
                                     return commentPersistencePort.save(commentParent);
                                 });

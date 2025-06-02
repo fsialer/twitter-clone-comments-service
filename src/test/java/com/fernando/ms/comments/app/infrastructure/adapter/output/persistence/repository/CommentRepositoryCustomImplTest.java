@@ -32,7 +32,6 @@ class CommentRepositoryCustomImplTest {
     @Test
     @DisplayName("When Find Comment By PostId And Pagination Expect List Of Comments")
     void When_FindCommentByPostIdAndPagination_Expect_ListOfComments() {
-        Author author1 = TestUtilAuthor.buildAuthorMock();
         Author author2 = TestUtilAuthor.buildAuthorMock();
         author2.setId("4d786ds8sd56sd");
         author2.setNames("John");

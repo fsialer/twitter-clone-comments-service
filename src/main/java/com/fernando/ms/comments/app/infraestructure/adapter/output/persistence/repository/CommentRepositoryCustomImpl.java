@@ -1,6 +1,5 @@
 package com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.repository;
 
-import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

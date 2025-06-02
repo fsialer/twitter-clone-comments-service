@@ -196,26 +196,6 @@ class CommentRestAdapterTest {
         Mockito.verify(commentRestMapper, times(1)).toExistsCommentResponse(anyBoolean());
     }
 
-//    @Test
-//    @DisplayName("When Post Identifier Is Correct Expect A List Of Comments With User Information")
-//    void When_PostIdentifierIsCorrect_Expect_AListOfCommentsWithUserInformation() {
-//        CommentUserResponse commentUserResponse = TestUtilsComment.buildCommentUserResponseMock();
-//        Comment comment = TestUtilsComment.buildCommentMock();
-//
-//        when(commentInputPort.findAllByPostId(anyString(),anyInt(),anyInt())).thenReturn(Flux.just(comment));
-//        when(commentRestMapper.toCommentsUserResponse(any(Flux.class))).thenReturn(Flux.just(commentUserResponse));
-//
-//        webTestClient.get()
-//                .uri("/v1/comments/{idPost}/post", "1")
-//                .exchange()
-//                .expectStatus().isOk()
-//                .expectBody()
-//                .jsonPath("$").isNotEmpty();
-//
-//        Mockito.verify(commentInputPort, times(1)).findAllByPostId(anyString(),anyInt(),anyInt());
-//        Mockito.verify(commentRestMapper, times(1)).toCommentsUserResponse(any(Flux.class));
-//    }
-
     @Test
     @DisplayName("when CommentData Is Valid Expect Save Data Successfully")
     void when_CommentDataIsValid_Expect_SaveDataSuccessfully() {
