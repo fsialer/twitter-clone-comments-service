@@ -18,4 +18,6 @@ public interface CommentInputPort {
     Flux<Comment> findAllByPostId(String postId,int page,int size);
 
     Mono<Boolean> verifyById(String id);
+
+    Mono<Long> countCommentByPostId(String postId);
 }

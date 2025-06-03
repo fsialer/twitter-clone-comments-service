@@ -44,4 +44,9 @@ public class CommentPersistenceAdapter implements CommentPersistencePort {
     public Mono<Boolean> verifyById(String id) {
         return commentRepository.existsById(id);
     }
+
+    @Override
+    public Mono<Long> countCommentByPostId(String postId) {
+        return commentRepository.countCommentByPostId(postId);
+    }
 }

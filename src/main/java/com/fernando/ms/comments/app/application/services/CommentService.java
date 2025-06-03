@@ -81,4 +81,9 @@ public class CommentService implements CommentInputPort {
     public Mono<Boolean> verifyById(String id) {
         return commentPersistencePort.verifyById(id);
     }
+
+    @Override
+    public Mono<Long> countCommentByPostId(String postId) {
+        return commentPersistencePort.countCommentByPostId(postId);
+    }
 }

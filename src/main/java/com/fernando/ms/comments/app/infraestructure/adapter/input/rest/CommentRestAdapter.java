@@ -9,6 +9,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -114,5 +115,13 @@ public class CommentRestAdapter {
             @PathVariable String id
     ) {
         return commentDataInputPort.delete(id);
+    }
+
+    @GetMapping("/{postId}/count")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Quantity comment by post")
+    @Operation(summary = "Count comment by post")
+    public Mono<CountCommentResponse> countCommentByPostId(@PathVariable("postId") String postId){
+        return commentInputPort.countCommentByPostId(postId).flatMap(commentRestMapper::toCountCommentResponse);
     }
 }

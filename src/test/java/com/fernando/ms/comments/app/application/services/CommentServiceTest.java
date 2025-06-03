@@ -227,4 +227,14 @@ class CommentServiceTest {
 
         Mockito.verify(commentPersistencePort, times(1)).verifyById(anyString());
     }
+
+    @Test
+    @DisplayName("When Post Exists Expect Quantity Comments")
+    void When_PostExists_Expect_QuantityComments(){
+        when(commentPersistencePort.countCommentByPostId(anyString())).thenReturn(Mono.just(2L));
+        Mono<Long> result=commentService.countCommentByPostId("1");
+        StepVerifier.create(result)
+                .expectNext(2L)
+                .verifyComplete();
+    }
 }
