@@ -73,7 +73,7 @@ public class TestUtilsComment {
         return CreateCommentRequest.builder()
                 .content("comment")
                 .postId("1")
-                .dateComment(LocalDateTime.now().toString())
+                .dateComment(LocalDateTime.now())
                 .parentComment("3")
                 .build();
     }
