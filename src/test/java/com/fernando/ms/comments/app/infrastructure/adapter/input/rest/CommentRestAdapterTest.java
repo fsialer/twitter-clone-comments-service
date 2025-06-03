@@ -13,6 +13,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
@@ -226,6 +227,28 @@ class CommentRestAdapterTest {
                 .expectStatus().isNoContent();
 
         Mockito.verify(commentDataInputPort, times(1)).delete(postDataId);
+    }
+
+    @Test
+    @DisplayName("When PostId Is Valid Expect Quantity Comments By PostId")
+    void When_PostIdIsValid_Expect_QuantityCommentByPostId() {
+        CountCommentResponse countCommentResponse = TestUtilsComment.buiildCountCommentResponseMock();
+
+        when(commentInputPort.countCommentByPostId(anyString())).thenReturn(Mono.just(2L));
+        when(commentRestMapper.toCountCommentResponse(anyLong())).thenReturn(Mono.just(countCommentResponse));
+
+        webTestClient.get()
+                .uri( uriBuilder -> uriBuilder
+                        .path("/v1/comments/{postId}/count")
+                        .build("1")
+                )
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.quantity").isEqualTo(countCommentResponse.quantity());
+
+        Mockito.verify(commentInputPort, times(1)).countCommentByPostId(anyString());
+        Mockito.verify(commentRestMapper, times(1)).toCountCommentResponse(anyLong());
     }
 
 

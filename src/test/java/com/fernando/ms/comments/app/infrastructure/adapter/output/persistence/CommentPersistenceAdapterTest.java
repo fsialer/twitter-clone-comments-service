@@ -18,8 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommentPersistenceAdapterTest {
@@ -121,6 +120,18 @@ class CommentPersistenceAdapterTest {
                 .expectNext(true)
                 .verifyComplete();
         Mockito.verify(commentRepository, times(1)).existsById(anyString());
+    }
+
+    @Test
+    @DisplayName("When PostId Exits Expect Quantity Comments")
+    void When_PostIdExists_Expect_CountComments(){
+        when(commentRepository.countCommentByPostId(anyString())).thenReturn(Mono.just(2L));
+        Mono<Long> result=commentPersistenceAdapter.countCommentByPostId("1");
+
+        StepVerifier.create(result)
+                .expectNext(2L)
+                .verifyComplete();
+        verify(commentRepository,times(1)).countCommentByPostId(anyString());
     }
 
 }

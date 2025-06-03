@@ -6,6 +6,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,5 +110,16 @@ class CommentRestMapperTest {
     void When_MappingBoolean_Expect_ExistsCommentResponse(){
         ExistsCommentResponse existsCommentResponse=commentRestMapper.toExistsCommentResponse(Boolean.TRUE);
         assertTrue(existsCommentResponse.getExists());
+    }
+
+    @Test
+    @DisplayName("When Mapping Long Expect MonoCountCommentResponse")
+    void When_MappingLong_Expect_MonoCountCommentResponse(){
+        Mono<CountCommentResponse> countCommentResponse=commentRestMapper.toCountCommentResponse(2L);
+        StepVerifier.create(countCommentResponse)
+                .consumeNextWith(countComment->{
+                    assertEquals(2L, countComment.quantity());
+                })
+                .verifyComplete();
     }
 }

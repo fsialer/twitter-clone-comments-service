@@ -6,6 +6,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDocument;
 
@@ -98,6 +99,12 @@ public class TestUtilsComment {
                 .content("comment")
                 .dateComment(LocalDateTime.now())
                 .author("john doe")
+                .build();
+    }
+
+    public static CountCommentResponse buiildCountCommentResponseMock(){
+        return CountCommentResponse.builder()
+                .quantity(2L)
                 .build();
     }
 }

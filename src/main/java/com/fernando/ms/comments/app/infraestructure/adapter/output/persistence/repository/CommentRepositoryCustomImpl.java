@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -25,5 +26,11 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
                 .skip((long) (page-1)*size)
                 .limit(size);
         return reactiveMongoTemplate.find(query, CommentDocument.class);
+    }
+
+    @Override
+    public Mono<Long> countCommentByPostId(String postId) {
+        Query query=new Query(Criteria.where("postId").is(postId));
+        return reactiveMongoTemplate.count(query,CommentDocument.class);
     }
 }

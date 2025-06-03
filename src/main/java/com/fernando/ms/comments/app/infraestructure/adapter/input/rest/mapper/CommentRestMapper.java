@@ -5,9 +5,11 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import org.mapstruct.Mapper;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Mapper(componentModel = "spring")
 public interface CommentRestMapper {
@@ -38,5 +40,11 @@ public interface CommentRestMapper {
         return ExistsCommentResponse.builder()
                 .exists(exists)
                 .build();
+    }
+
+    default Mono<CountCommentResponse> toCountCommentResponse(Long quantity){
+        return Mono.just(CountCommentResponse.builder()
+                .quantity(quantity)
+                .build());
     }
 }
