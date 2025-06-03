@@ -119,4 +119,14 @@ class CommentDataServiceTest {
         verify(commentDataPersistencePort, never()).delete(postId);
     }
 
+    @Test
+    @DisplayName("When Comment Exists Expect Quantity Comments Data")
+    void When_CommentExists_Expect_QuantityCommentsData(){
+        when(commentDataPersistencePort.countCommentDataByComment(anyString())).thenReturn(Mono.just(2L));
+        Mono<Long> result=commentDataService.countCommentDataByComment("1");
+        StepVerifier.create(result)
+                .expectNext(2L)
+                .verifyComplete();
+    }
+
 }

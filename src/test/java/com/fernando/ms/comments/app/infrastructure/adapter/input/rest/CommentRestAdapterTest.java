@@ -11,10 +11,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.Co
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.*;
 import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.DisplayName;
@@ -251,6 +248,27 @@ class CommentRestAdapterTest {
         Mockito.verify(commentRestMapper, times(1)).toCountCommentResponse(anyLong());
     }
 
+    @Test
+    @DisplayName("When CommentId Is Valid Expect Quantity Comments Data By CommentId")
+    void When_CommentIdIsValid_Expect_QuantityCommentsDataByCommentId() {
+        CountCommentDataResponse countCommentDataResponse = TestUtilsComment.buiildCountCommentDataResponseMock();
+
+        when(commentDataInputPort.countCommentDataByComment(anyString())).thenReturn(Mono.just(2L));
+        when(commentDataRestMapper.toCountCommentDataResponse(anyLong())).thenReturn(Mono.just(countCommentDataResponse));
+
+        webTestClient.get()
+                .uri( uriBuilder -> uriBuilder
+                        .path("/v1/comments/data/{commentId}/count")
+                        .build("1")
+                )
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.quantity").isEqualTo(countCommentDataResponse.quantity());
+
+        Mockito.verify(commentDataInputPort, times(1)).countCommentDataByComment(anyString());
+        Mockito.verify(commentDataRestMapper, times(1)).toCountCommentDataResponse(anyLong());
+    }
 
 
 

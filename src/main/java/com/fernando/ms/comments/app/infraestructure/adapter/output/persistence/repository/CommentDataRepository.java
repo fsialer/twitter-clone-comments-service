@@ -4,6 +4,6 @@ import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.m
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
-public interface CommentDataRepository extends ReactiveMongoRepository<CommentDataDocument,String> {
+public interface CommentDataRepository extends ReactiveMongoRepository<CommentDataDocument,String>, CommentDataRepositoryCustom {
     Mono<Boolean> existsByCommentIdAndUserId(String commentId, String userId);
 }

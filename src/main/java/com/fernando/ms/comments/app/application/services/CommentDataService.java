@@ -34,5 +34,10 @@ public class CommentDataService implements CommentDataInputPort {
                 .flatMap(postData->commentDataPersistencePort.delete(id));
     }
 
+    @Override
+    public Mono<Long> countCommentDataByComment(String commentId) {
+        return commentDataPersistencePort.countCommentDataByComment(commentId);
+    }
+
 
 }

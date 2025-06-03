@@ -33,4 +33,9 @@ public class CommentDataPersistenceAdapter implements CommentDataPersistencePort
         return commentDataRepository.deleteById(id).then();
     }
 
+    @Override
+    public Mono<Long> countCommentDataByComment(String commentId) {
+        return commentDataRepository.countCommentDataByCommentId(commentId);
+    }
+
 }
