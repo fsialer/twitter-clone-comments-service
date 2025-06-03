@@ -7,4 +7,5 @@ public interface CommentDataInputPort {
     Mono<Void> save(CommentData commentData);
     Mono<Void> delete(String id);
     Mono<Long> countCommentDataByComment(String commentId);
+    Mono<Boolean> verifyExistsCommentData(String commentId, String userId);
 }

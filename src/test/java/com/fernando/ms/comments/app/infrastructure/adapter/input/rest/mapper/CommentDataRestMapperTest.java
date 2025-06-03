@@ -4,6 +4,7 @@ import com.fernando.ms.comments.app.domain.models.CommentData;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentDataRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentDataResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentDataResponse;
 import com.fernando.ms.comments.app.utils.TestUtilCommentData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +50,17 @@ class CommentDataRestMapperTest {
         StepVerifier.create(countCommentResponse)
                 .consumeNextWith(countComment->{
                     assertEquals(2L, countComment.quantity());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("When Mapping Boolean Expect MonoExistsCommentDataResponse")
+    void When_MappingBoolean_Expect_MonoExistsCommentDataResponse(){
+        Mono<ExistsCommentDataResponse> existsPostDataResponseMono=commentDataRestMapper.toExistsCommentDataResponse(Boolean.TRUE);
+        StepVerifier.create(existsPostDataResponseMono)
+                .consumeNextWith(countCommentData->{
+                    assertEquals(true, countCommentData.exists());
                 })
                 .verifyComplete();
     }

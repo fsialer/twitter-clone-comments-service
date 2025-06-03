@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper;
 import com.fernando.ms.comments.app.domain.models.CommentData;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentDataResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentDataResponse;
 import org.mapstruct.Mapper;
 import reactor.core.publisher.Mono;
 
@@ -22,5 +23,13 @@ public interface CommentDataRestMapper {
         return Mono.just(CountCommentDataResponse.builder()
                 .quantity(quantity)
                 .build());
+    }
+
+    default Mono<ExistsCommentDataResponse> toExistsCommentDataResponse(Boolean exists){
+        return Mono.just(
+                ExistsCommentDataResponse.builder()
+                        .exists(exists)
+                        .build()
+        );
     }
 }

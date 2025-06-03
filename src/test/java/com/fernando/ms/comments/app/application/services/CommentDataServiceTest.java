@@ -129,4 +129,15 @@ class CommentDataServiceTest {
                 .verifyComplete();
     }
 
+
+    @Test
+    @DisplayName("When CommentId and UserId Exists Expect True")
+    void When_CommentIdAndUserIdExists_Expect_True(){
+        when(commentDataPersistencePort.verifyCommentData(anyString(),anyString())).thenReturn(Mono.just(true));
+        Mono<Boolean> result=commentDataService.verifyExistsCommentData("1","1");
+        StepVerifier.create(result)
+                .expectNext(true)
+                .verifyComplete();
+    }
+
 }
