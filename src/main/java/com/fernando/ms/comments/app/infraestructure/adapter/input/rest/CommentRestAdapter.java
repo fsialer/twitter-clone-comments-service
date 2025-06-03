@@ -7,10 +7,7 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.Co
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentDataRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -123,5 +120,13 @@ public class CommentRestAdapter {
     @Operation(summary = "Count comment by post")
     public Mono<CountCommentResponse> countCommentByPostId(@PathVariable("postId") String postId){
         return commentInputPort.countCommentByPostId(postId).flatMap(commentRestMapper::toCountCommentResponse);
+    }
+
+    @GetMapping("/data/{commentId}/count")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Quantity commentData by comment")
+    @Operation(summary = "Count commentData by Comments")
+    public Mono<CountCommentDataResponse> countCommentDataByPostId(@PathVariable("commentId") String commentId){
+        return commentDataInputPort.countCommentDataByComment(commentId).flatMap(commentDataRestMapper::toCountCommentDataResponse);
     }
 }

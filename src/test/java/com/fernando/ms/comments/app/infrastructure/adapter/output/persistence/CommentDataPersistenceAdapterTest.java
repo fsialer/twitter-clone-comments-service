@@ -97,4 +97,16 @@ class CommentDataPersistenceAdapterTest {
 
         verify(commentDataRepository, times(1)).deleteById(commentId);
     }
+
+    @Test
+    @DisplayName("When CommentId Exits Expect Quantity Comments Data")
+    void When_CommentIdExists_Expect_CountCommentsData(){
+        when(commentDataRepository.countCommentDataByCommentId(anyString())).thenReturn(Mono.just(2L));
+        Mono<Long> result=commentDataPersistenceAdapter.countCommentDataByComment("1");
+
+        StepVerifier.create(result)
+                .expectNext(2L)
+                .verifyComplete();
+        verify(commentDataRepository,times(1)).countCommentDataByCommentId(anyString());
+    }
 }

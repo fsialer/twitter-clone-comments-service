@@ -4,10 +4,7 @@ import com.fernando.ms.comments.app.domain.models.Author;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.*;
 import com.fernando.ms.comments.app.infraestructure.adapter.output.persistence.model.CommentDocument;
 
 import java.time.LocalDateTime;
@@ -104,6 +101,12 @@ public class TestUtilsComment {
 
     public static CountCommentResponse buiildCountCommentResponseMock(){
         return CountCommentResponse.builder()
+                .quantity(2L)
+                .build();
+    }
+
+    public static CountCommentDataResponse buiildCountCommentDataResponseMock(){
+        return CountCommentDataResponse.builder()
                 .quantity(2L)
                 .build();
     }
