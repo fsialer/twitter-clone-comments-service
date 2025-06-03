@@ -39,5 +39,10 @@ public class CommentDataService implements CommentDataInputPort {
         return commentDataPersistencePort.countCommentDataByComment(commentId);
     }
 
+    @Override
+    public Mono<Boolean> verifyExistsCommentData(String commentId, String userId) {
+        return commentDataPersistencePort.verifyCommentData(commentId,userId);
+    }
+
 
 }

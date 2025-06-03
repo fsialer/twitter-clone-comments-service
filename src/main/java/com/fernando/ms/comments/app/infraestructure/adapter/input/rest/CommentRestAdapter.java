@@ -129,4 +129,11 @@ public class CommentRestAdapter {
     public Mono<CountCommentDataResponse> countCommentDataByPostId(@PathVariable("commentId") String commentId){
         return commentDataInputPort.countCommentDataByComment(commentId).flatMap(commentDataRestMapper::toCountCommentDataResponse);
     }
+
+    @GetMapping("/data/{commentId}/exists")
+    @Operation(summary = "Verify exists of commentdata")
+    @ApiResponse(responseCode = "200",description = "Exists Commentdata")
+    public Mono<ExistsCommentDataResponse> verifyExistsPostDataByPostIdAndUserId(@RequestHeader("X-User-Id")  String userId,@PathVariable("commentId") String commentId){
+        return commentDataInputPort.verifyExistsCommentData(commentId,userId).flatMap(commentDataRestMapper::toExistsCommentDataResponse);
+    }
 }
