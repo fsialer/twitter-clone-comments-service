@@ -86,37 +86,39 @@ class CommentDataServiceTest {
     }
 
     @Test
-    @DisplayName("when Comment Exists Expect Delete Successfully")
-    void when_CommentExists_Expect_DeleteSuccessfully() {
+    @DisplayName("when CommentID And UserId Exists Expect Delete Successfully")
+    void when_CommentIDAndUserIdExists_Expect_DeleteSuccessfully() {
 
         String commentId = "commentId123";
+        String userId="userId12";
         CommentData commentData = TestUtilCommentData.buildCommentDataMock();
 
-        when(commentDataPersistencePort.findById(anyString())).thenReturn(Mono.just(commentData));
+        when(commentDataPersistencePort.findByCommentIdAndUserId(anyString(),anyString())).thenReturn(Mono.just(commentData));
         when(commentDataPersistencePort.delete(anyString())).thenReturn(Mono.empty());
 
-        Mono<Void> result = commentDataService.delete(commentId);
+        Mono<Void> result = commentDataService.delete(commentId,userId);
 
         StepVerifier.create(result)
                 .verifyComplete();
 
-        verify(commentDataPersistencePort, times(1)).findById(anyString());
+        verify(commentDataPersistencePort, times(1)).findByCommentIdAndUserId(anyString(),anyString());
         verify(commentDataPersistencePort, times(1)).delete(anyString());
     }
 
     @Test
-    @DisplayName("Expect CommentDataNotFoundException When Comment Does Not Exist")
-    void Expect_CommentDataNotFoundException_When_CommentDoesNotExist() {
-        String postId = "postId123";
-        when(commentDataPersistencePort.findById(postId)).thenReturn(Mono.empty());
-        Mono<Void> result = commentDataService.delete(postId);
+    @DisplayName("Expect CommentDataNotFoundException When CommentId And UserId Does Not Exist")
+    void Expect_CommentDataNotFoundException_When_CommentIdAndUserIdDoesNotExist() {
+        String commentId = "postId123";
+        String userId="userId12";
+        when(commentDataPersistencePort.findByCommentIdAndUserId(anyString(),anyString())).thenReturn(Mono.empty());
+        Mono<Void> result = commentDataService.delete(commentId,userId);
 
         StepVerifier.create(result)
                 .expectError(CommentDataNotFoundException.class)
                 .verify();
 
-        verify(commentDataPersistencePort, times(1)).findById(postId);
-        verify(commentDataPersistencePort, never()).delete(postId);
+        verify(commentDataPersistencePort, times(1)).findByCommentIdAndUserId(anyString(),anyString());
+        verify(commentDataPersistencePort, never()).delete(anyString());
     }
 
     @Test

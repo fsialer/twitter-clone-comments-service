@@ -28,10 +28,10 @@ public class CommentDataService implements CommentDataInputPort {
     }
 
     @Override
-    public Mono<Void> delete(String id) {
-        return commentDataPersistencePort.findById(id)
+    public Mono<Void> delete(String commentId,String userId) {
+        return commentDataPersistencePort.findByCommentIdAndUserId(commentId,userId)
                 .switchIfEmpty(Mono.error(CommentDataNotFoundException::new))
-                .flatMap(postData->commentDataPersistencePort.delete(id));
+                .flatMap(postData->commentDataPersistencePort.delete(postData.getId()));
     }
 
     @Override

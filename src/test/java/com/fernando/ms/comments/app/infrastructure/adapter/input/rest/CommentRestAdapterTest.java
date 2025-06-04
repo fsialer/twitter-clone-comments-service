@@ -215,15 +215,15 @@ class CommentRestAdapterTest {
     @Test
     @DisplayName("When Delete CommentData By Id Expect Complete Successfully")
     void When_DeleteCommentDataById_Expect_CompleteSuccessfully() {
-        String postDataId = "postDataId123";
-        when(commentDataInputPort.delete(anyString())).thenReturn(Mono.empty());
+        String commentId = "commentId";
+        when(commentDataInputPort.delete(anyString(),anyString())).thenReturn(Mono.empty());
         webTestClient.delete()
-                .uri("/v1/comments/data/{id}", postDataId)
+                .uri("/v1/comments/data/{commentId}", commentId)
                 .header("X-User-Id", "1")
                 .exchange()
                 .expectStatus().isNoContent();
 
-        Mockito.verify(commentDataInputPort, times(1)).delete(postDataId);
+        Mockito.verify(commentDataInputPort, times(1)).delete(anyString(),anyString());
     }
 
     @Test

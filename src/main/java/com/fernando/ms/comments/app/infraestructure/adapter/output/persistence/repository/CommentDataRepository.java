@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface CommentDataRepository extends ReactiveMongoRepository<CommentDataDocument,String>, CommentDataRepositoryCustom {
     Mono<Boolean> existsByCommentIdAndUserId(String commentId, String userId);
+    Mono<CommentDataDocument> findByCommentIdAndUserId(String commentId, String userId);
 }

@@ -5,9 +5,10 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentDataResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentDataResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import reactor.core.publisher.Mono;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommentDataRestMapper {
     CommentData toCommentData(CreateCommentDataRequest createCommentDataRequest);
 

@@ -109,4 +109,25 @@ class CommentDataPersistenceAdapterTest {
                 .verifyComplete();
         verify(commentDataRepository,times(1)).countCommentDataByCommentId(anyString());
     }
+
+    @Test
+    @DisplayName("When Identifier of the comment And User is correct Expect Return CommentData saved correctly")
+    void When_IdentifierOfTheCommentAndUserIsCorrect_Expect_ReturnCommentDataSavedCorrectly() {
+        String commentId = "commentId123";
+        String userId="userId1254";
+        CommentDataDocument commentDataDocument = TestUtilCommentData.buildCommentDataDocumentMock();
+        CommentData commentData = TestUtilCommentData.buildCommentDataMock();
+
+        when(commentDataRepository.findByCommentIdAndUserId(anyString(),anyString())).thenReturn(Mono.just(commentDataDocument));
+        when(commentDataPersistenceMapper.toCommentData(any(Mono.class))).thenReturn(Mono.just(commentData));
+
+        Mono<CommentData> result = commentDataPersistenceAdapter.findByCommentIdAndUserId(commentId,userId);
+
+        StepVerifier.create(result)
+                .expectNext(commentData)
+                .verifyComplete();
+
+        verify(commentDataRepository, times(1)).findByCommentIdAndUserId(anyString(),anyString());
+        verify(commentDataPersistenceMapper, times(1)).toCommentData(any(Mono.class));
+    }
 }
