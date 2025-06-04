@@ -8,10 +8,11 @@ import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.re
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommentRestMapper {
     default Flux<CommentResponse> toCommentsResponse(Flux<Comment> comments){
         return comments.map(this::toCommentResponse);

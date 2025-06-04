@@ -194,7 +194,7 @@ class GlobalControllerAdviceTest {
     @DisplayName("Expect CommentDataNotFoundException When PostData Identifier Is Invalid")
     void Expect_PostDataNotFoundException_When_PostDataIdentifierIsInvalid() {
         String commentDataId = "commentDataId123";
-        when(commentDataInputPort.delete(anyString())).thenReturn(Mono.error(CommentDataNotFoundException::new));
+        when(commentDataInputPort.delete(anyString(),anyString())).thenReturn(Mono.error(CommentDataNotFoundException::new));
         webTestClient.delete()
                 .uri("/v1/comments/data/{id}", commentDataId)
                 .header("X-User-Id", "1")
@@ -206,7 +206,7 @@ class GlobalControllerAdviceTest {
                     assert response.getMessage().equals(COMMENT_DATA_NOT_FOUND.getMessage());
                 });
 
-        Mockito.verify(commentDataInputPort, times(1)).delete(commentDataId);
+        Mockito.verify(commentDataInputPort, times(1)).delete(anyString(),anyString());
     }
 
     @Test

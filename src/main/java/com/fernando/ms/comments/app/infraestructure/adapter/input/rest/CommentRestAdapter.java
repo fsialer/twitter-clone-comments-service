@@ -103,15 +103,15 @@ public class CommentRestAdapter {
         return commentDataInputPort.save(commentDataRestMapper.toCommentData(userId,rq));
     }
 
-    @DeleteMapping("/data/{id}")
+    @DeleteMapping("/data/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiResponse(responseCode ="204", description = "Deleted comment data by id")
-    @Operation(summary = "Delete comment data by id")
+    @ApiResponse(responseCode ="204", description = "Deleted comment data by commentId")
+    @Operation(summary = "Delete comment data by commentId")
     public Mono<Void> deleteData(
             @RequestHeader("X-User-Id") String userId,
-            @PathVariable String id
+            @PathVariable("commentId") String commentId
     ) {
-        return commentDataInputPort.delete(id);
+        return commentDataInputPort.delete(commentId,userId);
     }
 
     @GetMapping("/{postId}/count")

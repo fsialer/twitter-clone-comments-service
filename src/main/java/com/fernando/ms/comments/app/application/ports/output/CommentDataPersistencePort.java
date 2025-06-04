@@ -9,4 +9,5 @@ public interface CommentDataPersistencePort {
     Mono<CommentData> findById(String id);
     Mono<Void> delete(String id);
     Mono<Long> countCommentDataByComment(String commentId);
+    Mono<CommentData> findByCommentIdAndUserId(String commentId,String userId);
 }

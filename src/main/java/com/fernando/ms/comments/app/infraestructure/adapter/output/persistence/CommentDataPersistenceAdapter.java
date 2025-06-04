@@ -38,4 +38,9 @@ public class CommentDataPersistenceAdapter implements CommentDataPersistencePort
         return commentDataRepository.countCommentDataByCommentId(commentId);
     }
 
+    @Override
+    public Mono<CommentData> findByCommentIdAndUserId(String commentId, String userId) {
+        return commentDataPersistenceMapper.toCommentData(commentDataRepository.findByCommentIdAndUserId(commentId,userId));
+    }
+
 }

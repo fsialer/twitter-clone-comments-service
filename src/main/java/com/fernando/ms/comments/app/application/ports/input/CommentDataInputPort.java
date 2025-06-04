@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface CommentDataInputPort {
     Mono<Void> save(CommentData commentData);
-    Mono<Void> delete(String id);
+    Mono<Void> delete(String commentId,String userId);
     Mono<Long> countCommentDataByComment(String commentId);
     Mono<Boolean> verifyExistsCommentData(String commentId, String userId);
 }
