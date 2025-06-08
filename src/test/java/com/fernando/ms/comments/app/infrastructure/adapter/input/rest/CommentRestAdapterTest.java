@@ -72,10 +72,10 @@ class CommentRestAdapterTest {
     @Test
     @DisplayName("When Comment Identifier Is Correct Expect Comment Information Successfully")
     void When_CommentIdentifierIsCorrect_Expect_CommentInformationSuccessfully() {
-        CommentResponse commentResponse = TestUtilsComment.buildCommentResponseMock();
+        CommentUserResponse commentAuthorResponse = TestUtilsComment.buildCommentUserResponseMock();
         Comment comment=TestUtilsComment.buildCommentMock();
         when(commentInputPort.findById(anyString())).thenReturn(Mono.just(comment));
-        when(commentRestMapper.toCommentResponse(any(Comment.class))).thenReturn(commentResponse);
+        when(commentRestMapper.toCommentAuthorResponse(any(Comment.class))).thenReturn(commentAuthorResponse);
         webTestClient.get()
                 .uri("/v1/comments/{id}",1L)
                 .exchange()
@@ -84,7 +84,7 @@ class CommentRestAdapterTest {
                 .jsonPath("$.content").isEqualTo("comment");
 
         Mockito.verify(commentInputPort,times(1)).findById(anyString());
-        Mockito.verify(commentRestMapper,times(1)).toCommentResponse(any(Comment.class));
+        Mockito.verify(commentRestMapper,times(1)).toCommentAuthorResponse(any(Comment.class));
     }
 
     @Test

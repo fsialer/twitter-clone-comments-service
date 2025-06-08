@@ -27,7 +27,12 @@ public class CommentService implements CommentInputPort {
     @Override
     public Mono<Comment> findById(String id) {
         return commentPersistencePort.findById(id)
-                .switchIfEmpty(Mono.error(CommentNotFoundException::new));
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new))
+                .flatMap(comment->
+                        externalUserOutputPort.findAuthorByUserId(comment.getUserId())
+                                .doOnNext(comment::setAuthor)
+                                .thenReturn(comment)
+                );
     }
 
     @Override

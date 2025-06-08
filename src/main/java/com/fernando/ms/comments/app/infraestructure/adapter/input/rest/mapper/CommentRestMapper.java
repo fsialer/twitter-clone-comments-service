@@ -28,6 +28,7 @@ public interface CommentRestMapper {
                 .content(comment.getContent())
                 .dateComment(comment.getDateComment())
                 .author(comment.getAuthor().getNames().concat(" ").concat(comment.getAuthor().getLastNames()==null?"":comment.getAuthor().getLastNames()).trim())
+                .answers(comment.getAnswers().stream().toList())
                 .build();
     }
 
