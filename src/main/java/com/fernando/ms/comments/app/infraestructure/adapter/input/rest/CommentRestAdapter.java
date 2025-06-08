@@ -42,9 +42,9 @@ public class CommentRestAdapter {
     @GetMapping("/{id}")
     @Operation(summary = "Find comment by id")
     @ApiResponse(responseCode = "200", description = "Found comment by id")
-    public Mono<ResponseEntity<CommentResponse>> findById(@PathVariable("id") String id){
+    public Mono<ResponseEntity<CommentUserResponse>> findById(@PathVariable("id") String id){
         return commentInputPort.findById(id)
-                .flatMap(comment ->Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentResponse(comment))));
+                .flatMap(comment ->Mono.just(ResponseEntity.ok().body(commentRestMapper.toCommentAuthorResponse(comment))));
     }
 
     @PostMapping

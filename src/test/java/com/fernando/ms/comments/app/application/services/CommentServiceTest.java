@@ -55,12 +55,15 @@ class CommentServiceTest {
     @DisplayName("When Comment Identifier Is Correct Except Comment Information Correct")
     void When_CommentIdentifierIsCorrect_Except_CommentInformationCorrect(){
         Comment comment= TestUtilsComment.buildCommentMock();
+        Author author=TestUtilAuthor.buildAuthorMock();
         when(commentPersistencePort.findById(anyString())).thenReturn(Mono.just(comment));
+        when(externalUserOutputPort.findAuthorByUserId(anyString())).thenReturn(Mono.just(author));
         Mono<Comment> comentMono=commentService.findById("1");
        StepVerifier.create(comentMono)
                 .expectNext(comment)
                 .verifyComplete();
         Mockito.verify(commentPersistencePort,times(1)).findById(anyString());
+        Mockito.verify(externalUserOutputPort,times(1)).findAuthorByUserId(anyString());
     }
 
     @Test

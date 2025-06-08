@@ -21,8 +21,8 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
     @Override
     public Flux<CommentDocument> findAllByPostId(String postId, int page, int size) {
 
-        Query query=new Query(Criteria.where("postId").is(postId).and("parent").isNull());
-        query.with(Sort.by(Sort.Direction.DESC,"datePost"))
+        Query query=new Query(Criteria.where("postId").is(postId));
+        query.with(Sort.by(Sort.Direction.DESC,"dateComment"))
                 .skip((long) (page-1)*size)
                 .limit(size);
         return reactiveMongoTemplate.find(query, CommentDocument.class);
@@ -30,7 +30,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
 
     @Override
     public Mono<Long> countCommentByPostId(String postId) {
-        Query query=new Query(Criteria.where("postId").is(postId));
+        Query query=new Query(Criteria.where("postId").is(postId).and("answers").size(0));
         return reactiveMongoTemplate.count(query,CommentDocument.class);
     }
 }

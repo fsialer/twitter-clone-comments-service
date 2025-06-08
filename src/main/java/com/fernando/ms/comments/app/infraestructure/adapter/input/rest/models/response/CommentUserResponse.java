@@ -3,6 +3,7 @@ package com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.r
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,4 +15,5 @@ public class CommentUserResponse {
     private String content;
     private LocalDateTime dateComment;
     private String author;
+    private List<String> answers;
 }

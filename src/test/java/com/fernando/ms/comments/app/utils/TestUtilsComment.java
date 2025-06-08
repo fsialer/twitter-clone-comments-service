@@ -40,11 +40,13 @@ public class TestUtilsComment {
                 .dateComment(LocalDateTime.now())
                 .postId("47fdfhhgds96574d")
                 .userId("4uuydnsd4478954")
+                //.parentComment("4uuydnsd44789545")
                 .author(Author.builder()
                         .id("ds545d4sds")
                         .names("john")
                         .lastNames("doe")
                         .build())
+                .answers(Set.of("4uuydnsd44789545","4uuydnsd44789546","4uuydnsd44789547"))
                 .build();
     }
 
