@@ -21,7 +21,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
     @Override
     public Flux<CommentDocument> findAllByPostId(String postId, int page, int size) {
 
-        Query query=new Query(Criteria.where("postId").is(postId));
+        Query query=new Query(Criteria.where("postId").is(postId).and("parent").isNull());
         query.with(Sort.by(Sort.Direction.DESC,"datePost"))
                 .skip((long) (page-1)*size)
                 .limit(size);
