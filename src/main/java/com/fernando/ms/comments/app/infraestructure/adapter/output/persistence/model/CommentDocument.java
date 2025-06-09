@@ -22,5 +22,6 @@ public class CommentDocument {
     private LocalDateTime updatedAt;
     private String userId;
     private String postId;
+    private String parentComment;
     private Set<String> answers;
 }
