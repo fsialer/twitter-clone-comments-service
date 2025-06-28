@@ -15,5 +15,6 @@ public class CommentUserResponse {
     private String content;
     private LocalDateTime dateComment;
     private String author;
+    private String parentComment;
     private List<String> answers;
 }

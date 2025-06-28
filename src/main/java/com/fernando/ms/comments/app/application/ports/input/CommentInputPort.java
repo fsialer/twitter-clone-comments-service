@@ -20,4 +20,6 @@ public interface CommentInputPort {
     Mono<Boolean> verifyById(String id);
 
     Mono<Long> countCommentByPostId(String postId);
+
+    Mono<Boolean> verifyCommentByUserId(String commentId, String userId);
 }

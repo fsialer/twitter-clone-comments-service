@@ -134,4 +134,31 @@ class CommentPersistenceAdapterTest {
         verify(commentRepository,times(1)).countCommentByPostId(anyString());
     }
 
+    @Test
+    @DisplayName("When CommentId And UserId Is Valid Expect True")
+    void When_CommentIdAndUserIdIsValid_Expect_True() {
+        when(commentRepository.existsByCommentIdAndUserId(anyString(),anyString())).thenReturn(Mono.just(true));
+
+        Mono<Boolean> result = commentPersistenceAdapter.verifyCommentByUserId("678318b2c8dda45d9a6c300d","d41dswyu2g4557df");
+
+        StepVerifier.create(result)
+                .expectNext(true)
+                .verifyComplete();
+
+        Mockito.verify(commentRepository, times(1)).existsByCommentIdAndUserId(anyString(),anyString());
+    }
+
+    @Test
+    @DisplayName("When CommentId And UserId Is Valid Expect False")
+    void When_CommentIdAndUserIdIsValid_Expect_False() {
+        when(commentRepository.existsByCommentIdAndUserId(anyString(),anyString())).thenReturn(Mono.just(false));
+
+        Mono<Boolean> result = commentPersistenceAdapter.verifyCommentByUserId("678318b2c8dda45d9a6c300d","d41dswyu2g4557df");
+
+        StepVerifier.create(result)
+                .expectNext(false)
+                .verifyComplete();
+
+        Mockito.verify(commentRepository, times(1)).existsByCommentIdAndUserId(anyString(),anyString());
+    }
 }

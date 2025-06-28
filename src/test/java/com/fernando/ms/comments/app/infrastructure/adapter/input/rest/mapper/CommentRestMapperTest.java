@@ -4,10 +4,7 @@ import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper.CommentRestMapper;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.*;
 import com.fernando.ms.comments.app.utils.TestUtilsComment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -121,5 +118,12 @@ class CommentRestMapperTest {
                     assertEquals(2L, countComment.quantity());
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("When Mapping Boolean Expect ExistsCommentUserResponse")
+    void When_MappingBoolean_Expect_ExistsCommentUserResponse(){
+        ExistsCommentUserResponse existsCommentUserResponse=commentRestMapper.toExistsCommentUserResponse(Boolean.TRUE);
+        assertTrue(existsCommentUserResponse.exists());
     }
 }

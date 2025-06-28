@@ -12,4 +12,5 @@ public interface CommentPersistencePort {
     Flux<Comment> findAllByPostId(String postId,int page,int size);
     Mono<Boolean> verifyById(String id);
     Mono<Long> countCommentByPostId(String postId);
+    Mono<Boolean> verifyCommentByUserId(String commentId, String userId);
 }

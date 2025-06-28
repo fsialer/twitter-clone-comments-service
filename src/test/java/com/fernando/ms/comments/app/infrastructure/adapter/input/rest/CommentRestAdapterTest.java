@@ -293,7 +293,28 @@ class CommentRestAdapterTest {
         Mockito.verify(commentDataRestMapper, times(1)).toExistsCommentDataResponse(anyBoolean());
     }
 
+    @Test
+    @DisplayName("When CommentId And UserId Is Valid Expect True")
+    void When_CommentIdAndUserIdAreValid_Expect_True() {
+        ExistsCommentUserResponse existsCommentUserResponse = TestUtilsComment.buildExistsCommentUserResponseMock();
 
+        when(commentInputPort.verifyCommentByUserId(anyString(),anyString())).thenReturn(Mono.just(Boolean.TRUE));
+        when(commentRestMapper.toExistsCommentUserResponse(anyBoolean())).thenReturn(existsCommentUserResponse);
+
+        webTestClient.get()
+                .uri( uriBuilder -> uriBuilder
+                        .path("/v1/comments/{commentId}/user")
+                        .build("1")
+                )
+                .header("X-User-Id","1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.exists").isEqualTo(existsCommentUserResponse.exists());
+
+        Mockito.verify(commentInputPort, times(1)).verifyCommentByUserId(anyString(),anyString());
+        Mockito.verify(commentRestMapper, times(1)).toExistsCommentUserResponse(anyBoolean());
+    }
 
 
 }

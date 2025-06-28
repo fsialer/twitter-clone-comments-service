@@ -112,4 +112,10 @@ public class TestUtilsComment {
                 .quantity(2L)
                 .build();
     }
+
+    public static ExistsCommentUserResponse buildExistsCommentUserResponseMock(){
+        return ExistsCommentUserResponse.builder()
+                .exists(true)
+                .build();
+    }
 }
