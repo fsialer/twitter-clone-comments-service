@@ -3,10 +3,7 @@ package com.fernando.ms.comments.app.infraestructure.adapter.input.rest.mapper;
 import com.fernando.ms.comments.app.domain.models.Comment;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.CreateCommentRequest;
 import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.request.UpdateCommentRequest;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CommentUserResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.CountCommentResponse;
-import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.ExistsCommentResponse;
+import com.fernando.ms.comments.app.infraestructure.adapter.input.rest.models.response.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import reactor.core.publisher.Flux;
@@ -27,6 +24,7 @@ public interface CommentRestMapper {
                 .id(comment.getId())
                 .content(comment.getContent())
                 .dateComment(comment.getDateComment())
+                .parentComment(comment.getParentComment())
                 .author(comment.getAuthor().getNames().concat(" ").concat(comment.getAuthor().getLastNames()==null?"":comment.getAuthor().getLastNames()).trim())
                 .answers(comment.getAnswers().stream().toList())
                 .build();
@@ -48,5 +46,11 @@ public interface CommentRestMapper {
         return Mono.just(CountCommentResponse.builder()
                 .quantity(quantity)
                 .build());
+    }
+
+    default ExistsCommentUserResponse toExistsCommentUserResponse(Boolean exists){
+        return ExistsCommentUserResponse.builder()
+                .exists(exists)
+                .build();
     }
 }

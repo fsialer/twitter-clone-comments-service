@@ -240,4 +240,28 @@ class CommentServiceTest {
                 .expectNext(2L)
                 .verifyComplete();
     }
+
+    @Test
+    @DisplayName("When CommentId And UserId Is Valid Expect True")
+    void When_CommentIdAndUserIdIsValid_Expect_True() {
+        when(commentPersistencePort.verifyCommentByUserId(anyString(),anyString())).thenReturn(Mono.just(true));
+        Mono<Boolean> result = commentService.verifyCommentByUserId("678318b2c8dda45d9a6c300d","dsdsds5d1s5d02s51ds");
+        StepVerifier.create(result)
+                .expectNext(true)
+                .verifyComplete();
+
+        Mockito.verify(commentPersistencePort, times(1)).verifyCommentByUserId(anyString(),anyString());
+    }
+
+    @Test
+    @DisplayName("When CommentId And UserId Is Not Valid Expect False")
+    void When_CommentIdAndUserIdIsValid_Expect_False() {
+        when(commentPersistencePort.verifyCommentByUserId(anyString(),anyString())).thenReturn(Mono.just(false));
+        Mono<Boolean> result = commentService.verifyCommentByUserId("678318b2c8dda45d9a6c300d","dsdsds5d1s5d02s51ds");
+        StepVerifier.create(result)
+                .expectNext(false)
+                .verifyComplete();
+
+        Mockito.verify(commentPersistencePort, times(1)).verifyCommentByUserId(anyString(),anyString());
+    }
 }

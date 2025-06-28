@@ -136,4 +136,12 @@ public class CommentRestAdapter {
     public Mono<ExistsCommentDataResponse> verifyExistsPostDataByPostIdAndUserId(@RequestHeader("X-User-Id")  String userId,@PathVariable("commentId") String commentId){
         return commentDataInputPort.verifyExistsCommentData(commentId,userId).flatMap(commentDataRestMapper::toExistsCommentDataResponse);
     }
+
+    @GetMapping("/{commentId}/user")
+    @Operation(summary = "Verify exists of comment by user authenticated")
+    @ApiResponse(responseCode ="200", description = "Exists comment by user authenticated")
+    public Mono<ExistsCommentUserResponse> verifyExistCommentByUserId(@RequestHeader("X-User-Id")  String userId,@PathVariable("commentId") String commentId){
+        return commentInputPort.verifyCommentByUserId(commentId,userId)
+                .map(commentRestMapper::toExistsCommentUserResponse);
+    }
 }
